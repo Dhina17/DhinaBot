@@ -17,20 +17,13 @@
 
 package io.github.dhina17.tgbot;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-
-import org.json.JSONObject;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Locality;
 import org.telegram.abilitybots.api.objects.Privacy;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import io.github.dhina17.utils.DogbinUtils;
 
 public class DhinaBot extends AbilityBot {
 	protected DhinaBot() {
@@ -43,14 +36,13 @@ public class DhinaBot extends AbilityBot {
   	}
   
   /*
-   * Ability - Deldog
+   * Ability - Deldog - paste
    * 
    * Reply /paste to a text message
    * 
    * It will provide the deldog link for the content of that text message
    * 
    */
-  	public static final String DELDOG_URL = "https://del.dog/";
 
   	public Ability dogbinPaste() {
     	return Ability.builder()
@@ -65,9 +57,10 @@ public class DhinaBot extends AbilityBot {
                     	String dogbinFinalUrl;
                     	String finalMessage;
 
-                    	if(upd.getMessage().isReply() && upd.getMessage().getReplyToMessage().hasText()) {
+						if(upd.getMessage().isReply() 
+								    && upd.getMessage().getReplyToMessage().hasText()) {
                     		textToPaste = upd.getMessage().getReplyToMessage().getText();
-                        	dogbinFinalUrl = getDogbinUrl(textToPaste);
+                        	dogbinFinalUrl = DogbinUtils.getDogbinUrl(textToPaste);
                         	if(dogbinFinalUrl != null) {
                         		finalMessage = "Here you go..\n\ndeldog: " + dogbinFinalUrl;
                         	}else{
@@ -82,32 +75,7 @@ public class DhinaBot extends AbilityBot {
                     .build();
   	}
 
-  	private String getDogbinUrl(String text) {
-
-    	HttpClient client = HttpClient.newHttpClient();
-    	HttpRequest request = HttpRequest.newBuilder()
-                                      				.uri(URI.create(DELDOG_URL + "documents"))
-                                      				.POST(BodyPublishers.ofString(text))
-                                      				.build();
-    	HttpResponse<?> response = null;
-    	String finalContent = null;
-
-    	try {
-      		response = client.send(request, BodyHandlers.ofString());
-
-      		if(response.statusCode() == 200) {
-        		JSONObject responseBody = new JSONObject(response.body().toString());
-        		finalContent = DELDOG_URL + responseBody.getString("key");
-     		}  
-
-    	}catch (IOException | InterruptedException e) {
-      		e.printStackTrace();
-    	}
-
-    	return finalContent;
-    }
-
-    /*
+  /*
    * Ability - Deldog - getpaste
    * 
    * Reply /getpaste to a message contains dogbin url
@@ -130,10 +98,12 @@ public class DhinaBot extends AbilityBot {
                         	String key;
                         	String finalMessage;
                         
-                        	if(upd.getMessage().isReply() && upd.getMessage().getReplyToMessage().hasText() && upd.getMessage().getReplyToMessage().getText().contains(DELDOG_URL)) {
+							if(upd.getMessage().isReply()
+										&& upd.getMessage().getReplyToMessage().hasText()
+										            && upd.getMessage().getReplyToMessage().getText().contains(DogbinUtils.DELDOG_URL)) {
                           		linkMessage = upd.getMessage().getReplyToMessage().getText();
-                          		key = linkMessage.split(DELDOG_URL)[1]; // Get the key of that dogbin url
-                          		content = getPastedDeldogContent(key);
+                          		key = linkMessage.split(DogbinUtils.DELDOG_URL)[1]; // Get the key of that dogbin url
+                          		content = DogbinUtils.getPastedDeldogContent(key);
                           		if(content != null){
                             		finalMessage = "Got the content successfully. 👇 \n\n" + content;
                           		}else{
@@ -147,27 +117,6 @@ public class DhinaBot extends AbilityBot {
 
                        	})
                        .build();
-    }
-
-    private String getPastedDeldogContent(String key) {
-
-      	HttpClient client = HttpClient.newHttpClient();
-      	HttpRequest request = HttpRequest.newBuilder()
-                                                    .uri(URI.create(DELDOG_URL + "raw/" + key))
-                                                    .GET()
-                                                    .build();
-      	String finalContent = null;
-     	try{
-        	HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-
-        	if (response.statusCode() == 200){
-          		finalContent = response.body().toString();
-        	}
-      	}catch(IOException | InterruptedException e) {
-        	e.printStackTrace();
-      	}
-                                                    
-      	return finalContent;
     }
 
 }
