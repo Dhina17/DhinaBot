@@ -65,7 +65,7 @@ public class DhinaBot extends AbilityBot {
                       String dogbinFinalUrl;
                       String finalMessage;
 
-                      if(upd.getMessage().isReply() && upd.getMessage().hasText()) {
+                      if(upd.getMessage().isReply() && upd.getMessage().getReplyToMessage().hasText()) {
                         textToPaste = upd.getMessage().getReplyToMessage().getText();
                         dogbinFinalUrl = getDogbinUrl(textToPaste);
                         if(dogbinFinalUrl != null) {
