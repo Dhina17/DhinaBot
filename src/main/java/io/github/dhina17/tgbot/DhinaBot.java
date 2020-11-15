@@ -52,7 +52,7 @@ public class DhinaBot extends AbilityBot {
    */
   public static final String DELDOG_URL = "https://del.dog/";
 
-  public Ability dogbin() {
+  public Ability dogbinPaste() {
     return Ability.builder()
                     .name("paste")
                     .info("Paste in dogbin")
@@ -64,7 +64,7 @@ public class DhinaBot extends AbilityBot {
                       String textToPaste;
                       String dogbinFinalUrl;
                       String finalMessage;
-                      
+
                       if(upd.getMessage().isReply() && upd.getMessage().hasText()) {
                         textToPaste = upd.getMessage().getReplyToMessage().getText();
                         dogbinFinalUrl = getDogbinUrl(textToPaste);
@@ -105,6 +105,69 @@ public class DhinaBot extends AbilityBot {
     }
 
     return finalContent;
+    }
+
+    /*
+   * Ability - Deldog - getpaste
+   * 
+   * Reply /getpaste to a message contains dogbin url
+   * 
+   * It will give the content of that dogbin link
+   * 
+   */
+
+    public Ability dogbinGetPaste() {
+      return Ability.builder()
+                       .name("getpaste")
+                       .info("Get content from a deldog url")
+                       .locality(Locality.ALL)  // This will work in all locality (user, groups).
+                       .privacy(Privacy.CREATOR) // Only creator can access this ability.
+                       .action( consumer -> {
+                        Long chatId = consumer.chatId();
+                        Update upd = consumer.update();
+                        String linkMessage;
+                        String content;
+                        String key;
+                        String finalMessage;
+                        
+                        if(upd.getMessage().isReply() && upd.getMessage().getReplyToMessage().hasText() && upd.getMessage().getReplyToMessage().getText().contains(DELDOG_URL)) {
+                          linkMessage = upd.getMessage().getReplyToMessage().getText();
+                          key = linkMessage.split(DELDOG_URL)[1]; // Get the key of that dogbin url
+                          content = getPastedDeldogContent(key);
+                          if(content != null){
+                            finalMessage = "Got the content successfully. 👇 \n\n" + content;
+                          }else{
+                            finalMessage = "Sorry, I can't fetch the content 😢";
+                          }
+                        }else{
+                          finalMessage = "Reply to a message that contains Dogbin URL , otherwise no 🙁";
+                        }
+
+                        silent.send(finalMessage, chatId);
+
+                       })
+                       .build();
+    }
+
+    private String getPastedDeldogContent(String key) {
+
+      HttpClient client = HttpClient.newHttpClient();
+      HttpRequest request = HttpRequest.newBuilder()
+                                                    .uri(URI.create(DELDOG_URL + "raw/" + key))
+                                                    .GET()
+                                                    .build();
+      String finalContent = null;
+      try{
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+
+        if (response.statusCode() == 200){
+          finalContent = response.body().toString();
+        }
+      }catch(IOException | InterruptedException e) {
+        e.printStackTrace();
+      }
+                                                    
+      return finalContent;
     }
 
 }
