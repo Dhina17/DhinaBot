@@ -21,6 +21,7 @@ import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Locality;
 import org.telegram.abilitybots.api.objects.Privacy;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import io.github.dhina17.utils.DogbinUtils;
@@ -52,7 +53,8 @@ public class DhinaBot extends AbilityBot {
                     .privacy(Privacy.CREATOR)  // Only creator can access this ability.
                     .action(consumer -> {
                     	Long chatId = consumer.chatId();
-                    	Update upd = consumer.update();
+						Update upd = consumer.update();
+						int replyToMessageId = upd.getMessage().getMessageId(); // Get the command message id
                     	String textToPaste;
                     	String dogbinFinalUrl;
                     	String finalMessage;
@@ -68,9 +70,15 @@ public class DhinaBot extends AbilityBot {
                         	}  
                     	}else{
                         	finalMessage = "Reply to a message that contains text..Else No link for you..😂👊";
-                    	}
-                       
-                      silent.send(finalMessage, chatId);
+						}
+
+						SendMessage message = new SendMessage();
+						message.setChatId(String.valueOf(chatId));
+						message.setReplyToMessageId(replyToMessageId); // Reply to the command message
+						message.setText(finalMessage);
+
+						silent.execute(message);
+
                     })
                     .build();
   	}
@@ -92,7 +100,8 @@ public class DhinaBot extends AbilityBot {
                        .privacy(Privacy.CREATOR) // Only creator can access this ability.
                        .action( consumer -> {
                     		Long chatId = consumer.chatId();
-                        	Update upd = consumer.update();
+							Update upd = consumer.update();
+							int replyToMessageId = upd.getMessage().getMessageId(); // Get the command message id
                         	String linkMessage;
                         	String content;
                         	String key;
@@ -111,11 +120,16 @@ public class DhinaBot extends AbilityBot {
                           		}
                         	}else{
                           		finalMessage = "Reply to a message that contains Dogbin URL , otherwise no 🙁";
-                        	}
+							}
 
-                        	silent.send(finalMessage, chatId);
+							SendMessage message = new SendMessage();
+							message.setChatId(String.valueOf(chatId));
+							message.setReplyToMessageId(replyToMessageId); // Reply to the command message
+							message.setText(finalMessage);
+							
+							silent.execute(message);
 
-                       	})
+						})
                        .build();
     }
 
