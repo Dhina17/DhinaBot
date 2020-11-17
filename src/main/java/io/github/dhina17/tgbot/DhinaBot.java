@@ -22,8 +22,10 @@ import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Locality;
 import org.telegram.abilitybots.api.objects.Privacy;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import io.github.dhina17.utils.DocsUtils;
 import io.github.dhina17.utils.DogbinUtils;
 
 public class DhinaBot extends AbilityBot {
@@ -55,32 +57,49 @@ public class DhinaBot extends AbilityBot {
                     	Long chatId = consumer.chatId();
 						Update upd = consumer.update();
 						int replyToMessageId = upd.getMessage().getMessageId(); // Get the command message id
-                    	String textToPaste;
-                    	String dogbinFinalUrl;
+                    	String textToPaste = null;
+                    	String dogbinFinalUrl = null;
                     	String finalMessage;
 
-						if(upd.getMessage().isReply() 
-								    && upd.getMessage().getReplyToMessage().hasText()) {
-                    		textToPaste = upd.getMessage().getReplyToMessage().getText();
-                        	dogbinFinalUrl = DogbinUtils.getDogbinUrl(textToPaste);
-                        	if(dogbinFinalUrl != null) {
-                        		finalMessage = "Here you go..\n\ndeldog: " + dogbinFinalUrl;
-                        	}else{
-                        		finalMessage = "I can't reach del.dog \n Go and paste yourself😔";
-                        	}  
-                    	}else{
-                        	finalMessage = "Reply to a message that contains text..Else No link for you..😂👊";
+						if (upd.getMessage().isReply() && (upd.getMessage().getReplyToMessage().hasText()
+							|| upd.getMessage().getReplyToMessage().hasDocument())) {
+
+						if (upd.getMessage().getReplyToMessage().hasDocument()) {
+							Document doc = upd.getMessage().getReplyToMessage().getDocument();
+							String fileMimeType = doc.getMimeType();
+							System.out.println(fileMimeType);
+							if (fileMimeType.equals("text/plain")) {
+								String fileId = doc.getFileId();
+								textToPaste = DocsUtils.getTextFromFile(this, fileId);
+
+							} else {
+								finalMessage = "Unsupported MIME type - " + fileMimeType + ". Sorry !";
+							}
+
+						} else {
+							textToPaste = upd.getMessage().getReplyToMessage().getText();
 						}
 
-						SendMessage message = new SendMessage();
-						message.setChatId(String.valueOf(chatId));
-						message.setReplyToMessageId(replyToMessageId); // Reply to the command message
-						message.setText(finalMessage);
+						if (textToPaste != null)
+							dogbinFinalUrl = DogbinUtils.getDogbinUrl(textToPaste);
 
-						silent.execute(message);
+						if (dogbinFinalUrl != null && !dogbinFinalUrl.isEmpty()) {
+							finalMessage = "Here you go..\n\ndeldog: " + dogbinFinalUrl;
+						} else {
+							finalMessage = "I can't reach del.dog \n Go and paste yourself😔";
+						}
+					} else {
+						finalMessage = "Reply to a message that contains text..Else No link for you..😂👊";
+					}
 
-                    })
-                    .build();
+					SendMessage message = new SendMessage();
+					message.setChatId(String.valueOf(chatId));
+					message.setReplyToMessageId(replyToMessageId); // Reply to the command message
+					message.setText(finalMessage);
+
+					silent.execute(message);
+
+				}).build();
   	}
 
   /*
