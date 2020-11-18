@@ -68,7 +68,7 @@ public class DhinaBot extends AbilityBot {
 							Document doc = upd.getMessage().getReplyToMessage().getDocument();
 							String fileMimeType = doc.getMimeType();
 							System.out.println(fileMimeType);
-							if (fileMimeType.equals("text/plain")) {
+							if (fileMimeType.contains("text/")) {
 								String fileId = doc.getFileId();
 								textToPaste = DocsUtils.getTextFromFile(this, fileId);
 
