@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package io.github.dhina17.utils;
+package io.github.dhina17.tgbot.utils;
 
 import java.io.IOException;
 import java.net.URL;

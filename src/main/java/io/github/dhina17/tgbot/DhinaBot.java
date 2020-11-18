@@ -25,8 +25,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import io.github.dhina17.utils.DocsUtils;
-import io.github.dhina17.utils.DogbinUtils;
+import io.github.dhina17.tgbot.utils.DocsUtils;
+import io.github.dhina17.tgbot.utils.DogbinUtils;
 
 public class DhinaBot extends AbilityBot {
 	protected DhinaBot() {
