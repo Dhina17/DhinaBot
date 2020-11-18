@@ -31,7 +31,6 @@ import io.github.dhina17.tgbot.BotConfig;
 public class DocsUtils {
     
     public static final String getTextFromFile(AbilityBot bot, String fileId) {
-		System.out.println("here lol");
 		StringBuilder fileContent = new StringBuilder();
 		String fileUrl = null;
 		GetFile getFile = new GetFile();
