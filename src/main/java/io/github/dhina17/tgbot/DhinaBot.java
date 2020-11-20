@@ -52,7 +52,7 @@ public class DhinaBot extends AbilityBot {
                     .name("paste")
                     .info("Paste in dogbin")
                     .locality(Locality.ALL)  // This will work in all locality (user, groups).
-                    .privacy(Privacy.CREATOR)  // Only creator can access this ability.
+                    .privacy(Privacy.ADMIN)  // Only admins can access this ability.
                     .action(consumer -> {
                     	Long chatId = consumer.chatId();
 						Update upd = consumer.update();
@@ -115,7 +115,7 @@ public class DhinaBot extends AbilityBot {
                        .name("getpaste")
                        .info("Get content from a deldog url")
                        .locality(Locality.ALL)  // This will work in all locality (user, groups).
-                       .privacy(Privacy.CREATOR) // Only creator can access this ability.
+                       .privacy(Privacy.ADMIN) // Only admins can access this ability.
                        .action( consumer -> {
                     		Long chatId = consumer.chatId();
 							Update upd = consumer.update();
