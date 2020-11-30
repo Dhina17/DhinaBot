@@ -18,143 +18,18 @@
 package io.github.dhina17.tgbot;
 
 import org.telegram.abilitybots.api.bot.AbilityBot;
-import org.telegram.abilitybots.api.objects.Ability;
-import org.telegram.abilitybots.api.objects.Locality;
-import org.telegram.abilitybots.api.objects.Privacy;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Document;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
-import io.github.dhina17.tgbot.utils.DocsUtils;
-import io.github.dhina17.tgbot.utils.DogbinUtils;
+import io.github.dhina17.tgbot.abilities.Dogbin;
 
 public class DhinaBot extends AbilityBot {
 	protected DhinaBot() {
 		super(BotConfig.BOT_TOKEN, BotConfig.BOT_USERNAME);
+		addExtensions(new Dogbin(this));
 	}
 
 	@Override
   	public int creatorId() {
     	return BotConfig.CREATOR_ID;
   	}
-  
-  /*
-   * Ability - Deldog - paste
-   * 
-   * Reply /paste to a text message
-   * 
-   * It will provide the deldog link for the content of that text message
-   * 
-   */
-
-  	public Ability dogbinPaste() {
-    	return Ability.builder()
-                    .name("paste")
-                    .info("Paste in dogbin")
-                    .locality(Locality.ALL)  // This will work in all locality (user, groups).
-                    .privacy(Privacy.ADMIN)  // Only admins can access this ability.
-                    .action(consumer -> {
-                    	Long chatId = consumer.chatId();
-						Update upd = consumer.update();
-						Message commandMessage = upd.getMessage();
-						Message replyToMessage = (commandMessage.isReply()) ? 
-																	commandMessage.getReplyToMessage() : null;
-						int commandMessageId = commandMessage.getMessageId(); // Get the command message id
-                    	String textToPaste = null;
-                    	String dogbinFinalUrl = null;
-						String finalMessage = "";
-						if(commandMessage.isReply() && (replyToMessage.hasDocument() || replyToMessage.hasText())) {
-							if (replyToMessage.hasDocument()) {
-								Document doc = replyToMessage.getDocument();
-								String fileMimeType = doc.getMimeType();
-								if (fileMimeType.contains("text/")) {
-									String fileId = doc.getFileId();
-									textToPaste = DocsUtils.getTextFromFile(this, fileId);
-								} else {
-									finalMessage = "Unsupported MIME type - " + fileMimeType + ". Sorry !";
-								}
-							}
-							
-							if(replyToMessage.hasText()) {
-									textToPaste = replyToMessage.getText();
-							}
-
-							if (textToPaste != null) {
-								dogbinFinalUrl = DogbinUtils.getDogbinUrl(textToPaste);
-
-							    if (dogbinFinalUrl != null && !dogbinFinalUrl.isEmpty()) {
-									finalMessage = "Here you go..\n\ndeldog: " + dogbinFinalUrl;
-								} else {
-									finalMessage = "I can't reach del.dog \n Go and paste yourself😔";
-								}
-							}
-						} else {
-							finalMessage = "Reply to a message that contains text..Else No link for you..😂👊";
-						}
-
-						SendMessage message = new SendMessage();
-						message.setChatId(String.valueOf(chatId));
-						message.setReplyToMessageId(commandMessageId); // Reply to the command message
-						message.setText(finalMessage);
-
-						silent.execute(message);
-
-					})
-					.build();
-  	}
-
-  /*
-   * Ability - Deldog - getpaste
-   * 
-   * Reply /getpaste to a message contains dogbin url
-   * 
-   * It will give the content of that dogbin link
-   * 
-   */
-
-	public Ability dogbinGetPaste() {
-    	return Ability.builder()
-                       .name("getpaste")
-                       .info("Get content from a deldog url")
-                       .locality(Locality.ALL)  // This will work in all locality (user, groups).
-                       .privacy(Privacy.ADMIN) // Only admins can access this ability.
-                       .action( consumer -> {
-                    		Long chatId = consumer.chatId();
-							Update upd = consumer.update();
-							Message commandMessage = upd.getMessage();
-							Message replyToMessage = (commandMessage.isReply()) ? 
-																	commandMessage.getReplyToMessage() : null;
-							int commandMessageId = commandMessage.getMessageId(); // Get the command message id
-                        	String linkMessage;
-                        	String content;
-                        	String key;
-                        	String finalMessage;
-                        
-							if(commandMessage.isReply()
-										&& replyToMessage.hasText()
-										            && replyToMessage.getText().contains(DogbinUtils.DELDOG_URL)) {
-                          		linkMessage = replyToMessage.getText();
-                          		key = linkMessage.split(DogbinUtils.DELDOG_URL)[1]; // Get the key of that dogbin url
-                          		content = DogbinUtils.getPastedDeldogContent(key);
-                          		if(content != null){
-                            		finalMessage = "Got the content successfully. 👇 \n\n" + content;
-                          		}else{
-                            		finalMessage = "Sorry, I can't fetch the content 😢";
-                          		}
-                        	}else{
-                          		finalMessage = "Reply to a message that contains Dogbin URL , otherwise no 🙁";
-							}
-
-							SendMessage message = new SendMessage();
-							message.setChatId(String.valueOf(chatId));
-							message.setReplyToMessageId(commandMessageId); // Reply to the command message
-							message.setText(finalMessage);
-							
-							silent.execute(message);
-
-						})
-                       .build();
-    }
 
 }
