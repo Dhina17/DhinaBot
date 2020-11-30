@@ -95,7 +95,8 @@ public class Dogbin implements AbilityExtension {
 						SendMessage message = new SendMessage();
 						message.setChatId(String.valueOf(chatId));
 						message.setReplyToMessageId(commandMessageId); // Reply to the command message
-						message.setText(finalMessage);
+                        message.setText(finalMessage);
+                        message.disableWebPagePreview(); // Disable the webpage preview for the link
 
                         try {
                             bot.execute(message);
