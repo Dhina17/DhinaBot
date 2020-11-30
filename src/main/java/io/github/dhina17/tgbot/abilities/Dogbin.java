@@ -58,8 +58,7 @@ public class Dogbin implements AbilityExtension {
                     	Long chatId = consumer.chatId();
 						Update upd = consumer.update();
 						Message commandMessage = upd.getMessage();
-						Message replyToMessage = (commandMessage.isReply()) ? 
-																	commandMessage.getReplyToMessage() : null;
+						Message replyToMessage = commandMessage.getReplyToMessage();
 						int commandMessageId = commandMessage.getMessageId(); // Get the command message id
                     	String textToPaste = null;
                     	String dogbinFinalUrl = null;
@@ -126,9 +125,8 @@ public class Dogbin implements AbilityExtension {
                     		Long chatId = consumer.chatId();
 							Update upd = consumer.update();
 							Message commandMessage = upd.getMessage();
-							Message replyToMessage = (commandMessage.isReply()) ? 
-																	commandMessage.getReplyToMessage() : null;
-							int commandMessageId = commandMessage.getMessageId(); // Get the command message id
+                            Message replyToMessage = commandMessage.getReplyToMessage();
+                            int commandMessageId = commandMessage.getMessageId(); // Get the command message id
                         	String linkMessage;
                         	String content;
                         	String key;
