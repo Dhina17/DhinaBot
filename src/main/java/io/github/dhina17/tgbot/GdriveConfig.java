@@ -17,21 +17,17 @@
 
 package io.github.dhina17.tgbot;
 
-import org.telegram.abilitybots.api.bot.AbilityBot;
+public class GdriveConfig {
 
-import io.github.dhina17.tgbot.abilities.Dogbin;
-import io.github.dhina17.tgbot.abilities.DriveMirror;
+    /*
+     * Place your TeamDrive ID here
+     */
 
-public class DhinaBot extends AbilityBot {
-	protected DhinaBot() {
-		super(BotConfig.BOT_TOKEN, BotConfig.BOT_USERNAME);
-        addExtensions(new Dogbin(this),
-                            new DriveMirror(this));
-	}
+    public static final String TEAM_DRIVE_ID = "";
 
-	@Override
-  	public int creatorId() {
-    	return BotConfig.CREATOR_ID;
-  	}
+    /*
+     * Place your G-Index link here
+     */
+    public static final String GDRIVE_INDEX_LINK = "";
 
 }
