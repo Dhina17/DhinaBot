@@ -44,6 +44,9 @@ public class AuthorizationUpdate {
         if (authorizationState != null) {
             AuthorizationUpdate.authorizationState = authorizationState;
         }
+        
+        Scanner scan = new Scanner(System.in);
+
         switch (AuthorizationUpdate.authorizationState.getConstructor()) {
             case AuthorizationStateWaitTdlibParameters.CONSTRUCTOR:
                 TdlibParameters parameters = new TdlibParameters();
@@ -66,7 +69,7 @@ public class AuthorizationUpdate {
                 
             case AuthorizationStateWaitPhoneNumber.CONSTRUCTOR: {
                 System.out.println("Enter your phone number:");
-                String phoneNumber = new Scanner(System.in).nextLine();
+                String phoneNumber = scan.nextLine();
                 Client.client.send(new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null),
                         authorizationRequestHandler);
                 break;
@@ -74,7 +77,7 @@ public class AuthorizationUpdate {
 
             case AuthorizationStateWaitCode.CONSTRUCTOR: {
                 System.out.println("Enter Authencation code:");
-                String code = new Scanner(System.in).nextLine();
+                String code = scan.nextLine();
                 Client.client.send(new TdApi.CheckAuthenticationCode(code), authorizationRequestHandler);
                 break;
             }
@@ -88,6 +91,7 @@ public class AuthorizationUpdate {
 				}
 				break;
         }
+        scan.close();
     }
 
     private static class AuthorizationRequestHandler implements ResultHandler {
