@@ -94,9 +94,9 @@ public class DriveUtils {
      * @param fileName  Name of the file which will be uploaded
      * @return  An Array of String with two elements {"file uploaded or not", "Name of the file after uploading"}
      */
-    public static String[] uploadToDrive(MessageQueue messageQueue, String fileName) {
+    public static String[] uploadToDrive(MessageQueue messageQueue, String filePath) {
         String[] result = {"false", ""};
-        java.io.File uploadFile = new java.io.File(fileName);
+        java.io.File uploadFile = new java.io.File(filePath);
         
         /*
          *  Create file Meta-data and Set parent as TeamDrive

@@ -9,6 +9,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <repositories>
+        <repository>
+          <id>mchv-release</id>
+          <name>MCHV Release Apache Maven Packages</name>
+          <url>https://mvn.mchv.eu/repository/mchv</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -41,6 +48,11 @@
              <artifactId>google-api-services-drive</artifactId>
              <version>v3-rev110-1.23.0</version>
          </dependency>
+         <dependency>
+            <groupId>it.tdlight</groupId>
+            <artifactId>tdlight-java</artifactId>
+            <version>RELEASE</version>
+          </dependency>
     </dependencies>
     <build>
         <pluginManagement>

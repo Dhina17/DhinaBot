@@ -28,8 +28,7 @@ import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 public class DriveUploadProgressListener implements MediaHttpUploaderProgressListener {
 
     private MessageQueue messageQueue;
-    private StringBuilder sb = new StringBuilder();
-    private int count = 0;
+    private StringBuilder sb = new StringBuilder("[");
 
     public DriveUploadProgressListener(MessageQueue mQueue) {
         this.messageQueue = mQueue;
@@ -46,28 +45,22 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
 
             case INITIATION_STARTED:
                 messageQueue.addEdit("Uploading file initiating...");
-                sb.append("[");
-                // TimeUnit.SECONDS.sleep(30); // Sleep 30 seconds to handle execeeding API
-                // limit.
                 break;
 
             case INITIATION_COMPLETE:
                 // Do Nothing
                 break;
 
-            case MEDIA_IN_PROGRESS:
+            case MEDIA_IN_PROGRESS:{
                 // Get the progress percent
                 String progress = NumberFormat.getPercentInstance().format(uploader.getProgress());
-
-                // To avoid execeeding API limit, just show updates only for 10 times.Will
-                // handle it in a better way.
-                if (count < 10) {
-                    sb.append("==");
-                    messageQueue.addEdit("Uploading...\n" + sb + "]\n" + progress + " % of " + fileSize + "MB");
-                    count++;
-                }
-
+                
+                sb.append("==");
+                messageQueue.addEdit("Uploading...\n" + sb + "]\n" + progress + " of " + fileSize + "MB");
                 break;
+            }
+
+               
             case MEDIA_COMPLETE:
                 messageQueue.addEdit("Upload completed.... Generating shareable link..");
                 break;

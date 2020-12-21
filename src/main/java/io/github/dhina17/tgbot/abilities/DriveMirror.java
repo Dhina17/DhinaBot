@@ -29,6 +29,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -40,6 +41,7 @@ import io.github.dhina17.tgbot.utils.FileUtils;
 import io.github.dhina17.tgbot.utils.botapi.BotExecutor;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 import io.github.dhina17.tgbot.utils.gdrive.DriveUtils;
+import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
 
 public class DriveMirror implements AbilityExtension{
 
@@ -54,26 +56,39 @@ public class DriveMirror implements AbilityExtension{
                     .builder()
                     .name("mirror")
                     .info("Mirror the given link to gdrive")
-                    .input(1)
                     .privacy(Privacy.ADMIN)  // Only admins can access this ability.
                     .locality(Locality.GROUP)  // This will work in groups.
                     .action(consumer -> {
                         Long chatId = consumer.chatId();
                         Update upd = consumer.update();
                         Message commandMessage = upd.getMessage();
+                        Boolean isReply = commandMessage.isReply();
+                        Message replyToMessage = commandMessage.getReplyToMessage();
+                        String fileId = null;
+                        String downloadUrl = null;
 
-                        // Split the command to get the Download file link
-                        String[] commandMessageTexts = commandMessage.getText().split("/mirror");
+                        if(isReply){
+                            if(replyToMessage.hasDocument()){
+                                Document doc = replyToMessage.getDocument();
+                                fileId = doc.getFileId();
+                            }
+                        }else{
+                            // Split the command to get the Download file link
+                            String[] commandMessageTexts = commandMessage.getText().split("/mirror");
+                            if(commandMessageTexts.length > 0 && (commandMessageTexts[1].contains("https://") || commandMessageTexts[1].contains("http://"))){
+                                downloadUrl = commandMessageTexts[1];
+                            }
+                        }
 
                         SendMessage message = new SendMessage();
                         message.setChatId(String.valueOf(chatId));
                         message.setReplyToMessageId(commandMessage.getMessageId());
 
                         // Check for the link
-                        if(commandMessageTexts.length > 0 && (commandMessageTexts[1].contains("https://") || commandMessageTexts[1].contains("http://"))){
-                            String downloadUrl = commandMessageTexts[1];
+                        if(downloadUrl != null || fileId != null){
                             message.setText("Getting Info...");
-                            String fileName = FileUtils.getFileNameFromLink(downloadUrl);
+                            final String remoteFileId = fileId;
+                            final String dUrl = downloadUrl;
 
                             try {
 								bot.executeAsync(message, new SentCallback<Message>(){
@@ -91,16 +106,24 @@ public class DriveMirror implements AbilityExtension{
                                         BotExecutor botExecutor = new BotExecutor(bot, messageQueue);
                                         botExecutor.start();
 
+                                        // Send message queue to the update handler
+                                        TgClientUtils.updateHandler.setMessageQueue(messageQueue);
+
                                         Boolean isFileDownloaded = false;
                                         Boolean isFileUploaded = false;
 
                                         // Dowloading the file in async way
-                                        CompletableFuture<Boolean> downloadProcess = CompletableFuture.supplyAsync(() -> {
-                                            return FileUtils.downloadFile(messageQueue, downloadUrl, fileName);
+                                        CompletableFuture<String[]> downloadProcess = CompletableFuture.supplyAsync(() -> {
+                                            if(isReply){
+                                                return TgClientUtils.dowloadFile(remoteFileId);
+                                            }else{
+                                                return FileUtils.downloadFile(messageQueue, dUrl);
+                                            }
+                                            
                                         });
 
                                         try {
-                                            isFileDownloaded = downloadProcess.get();
+                                            isFileDownloaded = Boolean.parseBoolean(downloadProcess.get()[0]);
 									    } catch (InterruptedException e) {
 									        e.printStackTrace();
 									    } catch (ExecutionException e) {
@@ -110,13 +133,15 @@ public class DriveMirror implements AbilityExtension{
                                         if(isFileDownloaded){
                                             try{
                                                 // Upload the file after getting response from the download process
-                                                CompletableFuture<String[]> uploadProcess = downloadProcess.thenApply( isDownloaded -> {
+                                                CompletableFuture<String[]> uploadProcess = downloadProcess.thenApply( downloadResult -> {
+                                                    Boolean isDownloaded = Boolean.parseBoolean(downloadResult[0]);
+                                                    String downloadedFilePath = downloadResult[1];
                                                     if(!isDownloaded){
                                                         String[] result = {"false", ""};
                                                         messageQueue.addEdit("Download failed..");
                                                         return result;
                                                     }else{
-                                                        return DriveUtils.uploadToDrive(messageQueue, fileName);
+                                                        return DriveUtils.uploadToDrive(messageQueue, downloadedFilePath);
                                                     }
                                                 });
 
@@ -124,6 +149,9 @@ public class DriveMirror implements AbilityExtension{
                                                 if(!isFileUploaded){
                                                     messageQueue.addEdit("Upload failed..");
                                                 }else{
+                                                    // Get the filename
+                                                    String fileName = uploadProcess.get()[1];
+
                                                     // Delete the Progress Message from the bot
                                                     DeleteMessage dMsge = new DeleteMessage(String.valueOf(chatId), editMsgeId);
                                                     messageQueue.add(dMsge);
@@ -138,7 +166,7 @@ public class DriveMirror implements AbilityExtension{
                                                     String reqUserName = commandMessage.getFrom().getUserName(); // Get the mirror link requested user id
 
                                                     // Finalize the message text
-                                                    successMessage.setText(fileName + "\n\n" + "<a href=\"" + mirrorLink + "\">Shareable link</a>\n\n" + "To: @" + reqUserName);
+                                                    successMessage.setText(fileName + "\n\n<a href=\"" + mirrorLink + "\">Shareable link</a>\n\n" + "To: @" + reqUserName);
                                                     // send the final message
                                                     messageQueue.add(successMessage);
                                                 }
@@ -164,7 +192,7 @@ public class DriveMirror implements AbilityExtension{
 								e.printStackTrace();
 							}
                         }else{
-                            message.setText("Give valid file link to mirror");
+                            message.setText("Reply to a file or give link to mirror");
                             try {
 								bot.execute(message);
 							} catch (TelegramApiException e) {

@@ -13,18 +13,55 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/ 
-
+*/
 
 package io.github.dhina17.tgbot;
+
+import java.io.IOError;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import io.github.dhina17.tgbot.utils.tgclient.AuthorizationUpdate;
+import io.github.dhina17.tgbot.utils.tgclient.Client;
+import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
+import it.tdlight.common.Init;
+import it.tdlight.common.utils.CantLoadLibrary;
+import it.tdlight.jni.TdApi;
+import it.tdlight.tdlight.ClientManager;
 
 public final class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
+
+        CompletableFuture<Void> tdlib = CompletableFuture.runAsync(() -> {
+            try {
+                // Initialize the TDlib
+                Init.start();
+                Client.client = ClientManager.create(TgClientUtils.updateHandler, null, null);
+                Client.client.execute(new TdApi.SetLogVerbosityLevel(0));
+                if (Client.client.execute(new TdApi.SetLogStream(
+                        new TdApi.LogStreamFile("tdlib.log", 1 << 27, false))) instanceof TdApi.Error) {
+                    throw new IOError(new IOException("Write access to the current directory is required"));
+                }
+                AuthorizationUpdate.authorizationLock.lock();
+                try {
+                    while (!AuthorizationUpdate.haveAuthorization) {
+                        AuthorizationUpdate.gotAuthorization.await();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    AuthorizationUpdate.authorizationLock.unlock();
+                }
+            } catch (CantLoadLibrary e1) {
+                e1.printStackTrace();
+            }
+
+        });
+        
         try{
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(new DhinaBot());

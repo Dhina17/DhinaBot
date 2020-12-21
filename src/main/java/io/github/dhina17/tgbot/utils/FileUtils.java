@@ -49,7 +49,9 @@ public class FileUtils {
      * @param fileName The Name of the file to be downloaded
      * @return A Boolean value implies Download success or not
      */
-    public static Boolean downloadFile(MessageQueue messageQueue, String link, String fileName){
+    public static String[] downloadFile(MessageQueue messageQueue, String link){
+        
+        String[] result = {"false", ""};
         try{
 
             // Create URL
@@ -61,6 +63,7 @@ public class FileUtils {
             Double fileSizeinMB = fileSizeinBytes * Math.pow(10, -6);
             String fileSize = String.format("%.2f", fileSizeinMB);
 
+            String fileName = getFileNameFromLink(link);
             File file = new File(fileName);
 
             try(BufferedInputStream in = new BufferedInputStream(url.openStream())) {
@@ -74,8 +77,6 @@ public class FileUtils {
                 StringBuilder sb = new StringBuilder();
                 sb.append("[");
 
-
-                messageQueue.addEdit("Getting ready for download...");
                 Boolean isEdited = false;
 
                 while((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -84,30 +85,34 @@ public class FileUtils {
 
                     downloadedPercent = (int) ((downloaded * 100) / fileSizeinBytes);
 
-                    // Telegram API won't allow >20 requests within a minute.To handle this, Show updates for only 10s percents.
-                    // Will handle in a better way.
+                    // Just to avoid the delay of downloading the file.(Actually download completes faster but showing the progress will take time)
+                    // Will fix this in a better way later.
                     if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
                         sb.append("==");
                         messageQueue.addEdit("Downloading:\n\n"+fileName+"\n"+sb+"]\n"+downloadedPercent+"% of " + fileSize + " MB");
-                        //bot.execute(editMsge);
                         isEdited=true;
-                    }else if(downloadedPercent != 0 && downloadedPercent % 5 != 0){
+                    }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){
                         isEdited = false;
                     }
                 }
 
                 //Closing output stream
                 out.close();
+
+                // final result
+                result[0] = "true";
+                result[1] = file.getPath();
     
-                return true;
+                return result;
+
             } catch(Exception e) {
                 e.printStackTrace();
-                return false;
+                return result;
             }
 
         }catch(IOException e){
             e.printStackTrace();
-            return false;
+            return result;
         }
     } 
     
