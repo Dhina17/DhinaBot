@@ -89,9 +89,8 @@ public class DriveUtils {
 
     /**
      * 
-     * @param bot  An Ability bot instance to execute bot API method - EditMessageText
-     * @param editMsge  The Message to be updated to show the process
-     * @param fileName  Name of the file which will be uploaded
+     * @param messageQueue Queue which contains all bot methods to be executed 
+     * @param filePath  Path of the file which will be uploaded
      * @return  An Array of String with two elements {"file uploaded or not", "Name of the file after uploading"}
      */
     public static String[] uploadToDrive(MessageQueue messageQueue, String filePath) {

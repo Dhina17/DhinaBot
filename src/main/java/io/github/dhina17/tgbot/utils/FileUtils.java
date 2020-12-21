@@ -43,10 +43,8 @@ public class FileUtils {
 
     /**
      * 
-     * @param bot An Ability bot instance to execute bot API method - EditMessageText
-     * @param editMsge The Message to be updated to show the process
+     * @param messageQueue Queue which contains all bot methods to be executed
      * @param link The link of the file to be downloaded
-     * @param fileName The Name of the file to be downloaded
      * @return A Boolean value implies Download success or not
      */
     public static String[] downloadFile(MessageQueue messageQueue, String link){
