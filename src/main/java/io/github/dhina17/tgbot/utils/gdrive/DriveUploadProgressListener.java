@@ -19,68 +19,60 @@ package io.github.dhina17.tgbot.utils.gdrive;
 
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.concurrent.TimeUnit;
 
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
 
-import org.telegram.abilitybots.api.bot.AbilityBot;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
 public class DriveUploadProgressListener implements MediaHttpUploaderProgressListener {
 
-    private AbilityBot bot;
-    private EditMessageText editMsge;
+    private MessageQueue messageQueue;
     private StringBuilder sb = new StringBuilder();
     private int count = 0;
 
-    public DriveUploadProgressListener(AbilityBot bot, EditMessageText editMsge) {
-        this.bot = bot;
-        this.editMsge = editMsge;
+    public DriveUploadProgressListener(MessageQueue mQueue) {
+        this.messageQueue = mQueue;
     }
-	@Override
-	public void progressChanged(MediaHttpUploader uploader) throws IOException {
+
+    @Override
+    public void progressChanged(MediaHttpUploader uploader) throws IOException {
         Double fileSizeInMB = uploader.getMediaContent().getLength() * Math.pow(10, -6);
         String fileSize = String.format("%.2f", fileSizeInMB);
-        try{
-            switch(uploader.getUploadState()){
-                case NOT_STARTED:
-                    // Do Nothing
-                    break;
+        switch (uploader.getUploadState()) {
+            case NOT_STARTED:
+                // Do Nothing
+                break;
 
-                case INITIATION_STARTED:
-                    editMsge.setText("Uploading file initiating...");
-                    bot.execute(editMsge);
-                    sb.append("[");
-                    TimeUnit.SECONDS.sleep(30); // Sleep 30 seconds to handle execeeding API limit.
-                    break;
+            case INITIATION_STARTED:
+                messageQueue.addEdit("Uploading file initiating...");
+                sb.append("[");
+                // TimeUnit.SECONDS.sleep(30); // Sleep 30 seconds to handle execeeding API
+                // limit.
+                break;
 
-                case INITIATION_COMPLETE:
-                    // Do Nothing
-                    break;
+            case INITIATION_COMPLETE:
+                // Do Nothing
+                break;
 
-                case MEDIA_IN_PROGRESS:
-                    // Get the progress percent
-                    String progress = NumberFormat.getPercentInstance().format(uploader.getProgress());
-                    
-                   //To avoid execeeding API limit, just show updates only for 10 times.Will handle it in a better way. 
-                    if(count < 10){
-                        sb.append("==");
-                        editMsge.setText("Uploading...\n" + sb + "]\n" + progress + " % of " + fileSize + "MB");
-                        bot.execute(editMsge);
-                        count++;
-                    }
-                    
-                    break;
-                case MEDIA_COMPLETE:
-                    editMsge.setText("Upload completed.... Generating shareable link..");
-                    bot.execute(editMsge);
-                    break;
+            case MEDIA_IN_PROGRESS:
+                // Get the progress percent
+                String progress = NumberFormat.getPercentInstance().format(uploader.getProgress());
+
+                // To avoid execeeding API limit, just show updates only for 10 times.Will
+                // handle it in a better way.
+                if (count < 10) {
+                    sb.append("==");
+                    messageQueue.addEdit("Uploading...\n" + sb + "]\n" + progress + " % of " + fileSize + "MB");
+                    count++;
                 }
-        }catch(Exception e){
-            e.printStackTrace();
-        } 
-		
-	}
-    
+
+                break;
+            case MEDIA_COMPLETE:
+                messageQueue.addEdit("Upload completed.... Generating shareable link..");
+                break;
+        }
+
+    }
+
 }

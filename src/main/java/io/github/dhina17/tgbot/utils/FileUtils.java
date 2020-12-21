@@ -25,8 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.telegram.abilitybots.api.bot.AbilityBot;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
 public class FileUtils {
     public static String getFileNameFromLink(String link) {
@@ -50,7 +49,7 @@ public class FileUtils {
      * @param fileName The Name of the file to be downloaded
      * @return A Boolean value implies Download success or not
      */
-    public static Boolean downloadFile(AbilityBot bot, EditMessageText editMsge, String link, String fileName){
+    public static Boolean downloadFile(MessageQueue messageQueue, String link, String fileName){
         try{
 
             // Create URL
@@ -75,8 +74,8 @@ public class FileUtils {
                 StringBuilder sb = new StringBuilder();
                 sb.append("[");
 
-                editMsge.setText("Getting ready for download...");
-                bot.execute(editMsge);
+
+                messageQueue.addEdit("Getting ready for download...");
                 Boolean isEdited = false;
 
                 while((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -89,8 +88,8 @@ public class FileUtils {
                     // Will handle in a better way.
                     if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
                         sb.append("==");
-                        editMsge.setText("\rDownloading:\n\n"+fileName+"\n"+sb+"]\n"+downloadedPercent+"% of " + fileSize + " MB");
-                        bot.execute(editMsge);
+                        messageQueue.addEdit("Downloading:\n\n"+fileName+"\n"+sb+"]\n"+downloadedPercent+"% of " + fileSize + " MB");
+                        //bot.execute(editMsge);
                         isEdited=true;
                     }else if(downloadedPercent != 0 && downloadedPercent % 5 != 0){
                         isEdited = false;

@@ -29,7 +29,6 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -37,8 +36,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
 import io.github.dhina17.tgbot.GdriveConfig;
-import io.github.dhina17.tgbot.utils.gdrive.DriveUtils;
 import io.github.dhina17.tgbot.utils.FileUtils;
+import io.github.dhina17.tgbot.utils.botapi.BotExecutor;
+import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
+import io.github.dhina17.tgbot.utils.gdrive.DriveUtils;
 
 public class DriveMirror implements AbilityExtension{
 
@@ -80,15 +81,22 @@ public class DriveMirror implements AbilityExtension{
 									@Override
 									public void onResult(BotApiMethod<Message> method, Message response) {
                                         Integer editMsgeId = response.getMessageId();
-                                        EditMessageText editMsge = new EditMessageText();
-                                        editMsge.setChatId(String.valueOf(chatId));
-                                        editMsge.setMessageId(editMsgeId);
+
+                                        // Create MessageQueue
+                                        MessageQueue messageQueue = new MessageQueue()
+                                                                                    .setChatId(String.valueOf(chatId))
+                                                                                    .setMessageId(editMsgeId);
+
+                                        // Create the executor and start it
+                                        BotExecutor botExecutor = new BotExecutor(bot, messageQueue);
+                                        botExecutor.start();
+
                                         Boolean isFileDownloaded = false;
                                         Boolean isFileUploaded = false;
 
                                         // Dowloading the file in async way
                                         CompletableFuture<Boolean> downloadProcess = CompletableFuture.supplyAsync(() -> {
-                                            return FileUtils.downloadFile(bot, editMsge, downloadUrl, fileName);
+                                            return FileUtils.downloadFile(messageQueue, downloadUrl, fileName);
                                         });
 
                                         try {
@@ -105,26 +113,20 @@ public class DriveMirror implements AbilityExtension{
                                                 CompletableFuture<String[]> uploadProcess = downloadProcess.thenApply( isDownloaded -> {
                                                     if(!isDownloaded){
                                                         String[] result = {"false", ""};
-                                                        editMsge.setText("Download failed..");
-                                                        try {
-														    bot.execute(editMsge);
-													    } catch (TelegramApiException e) {
-														    e.printStackTrace();
-													    }
+                                                        messageQueue.addEdit("Download failed..");
                                                         return result;
                                                     }else{
-                                                        return DriveUtils.uploadToDrive(bot, editMsge, fileName);
+                                                        return DriveUtils.uploadToDrive(messageQueue, fileName);
                                                     }
                                                 });
 
                                                 isFileUploaded = Boolean.parseBoolean(uploadProcess.get()[0]);
                                                 if(!isFileUploaded){
-                                                    editMsge.setText("Upload failed..");
-                                                    bot.execute(editMsge);
+                                                    messageQueue.addEdit("Upload failed..");
                                                 }else{
                                                     // Delete the Progress Message from the bot
                                                     DeleteMessage dMsge = new DeleteMessage(String.valueOf(chatId), editMsgeId);
-                                                    bot.execute(dMsge);
+                                                    messageQueue.add(dMsge);
 
                                                     // Sending the final sucess message with mirror link and link requested user
                                                     SendMessage successMessage = new SendMessage();
@@ -138,7 +140,7 @@ public class DriveMirror implements AbilityExtension{
                                                     // Finalize the message text
                                                     successMessage.setText(fileName + "\n\n" + "<a href=\"" + mirrorLink + "\">Shareable link</a>\n\n" + "To: @" + reqUserName);
                                                     // send the final message
-                                                    bot.execute(successMessage);
+                                                    messageQueue.add(successMessage);
                                                 }
                                             }catch(Exception e){
                                                 e.printStackTrace();

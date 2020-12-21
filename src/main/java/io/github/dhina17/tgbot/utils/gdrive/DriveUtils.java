@@ -44,10 +44,8 @@ import com.google.api.services.drive.Drive.Files.Create;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 
-import org.telegram.abilitybots.api.bot.AbilityBot;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-
 import io.github.dhina17.tgbot.GdriveConfig;
+import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
 public class DriveUtils {
     public static final String APP_NAME = "DhinaBot";
@@ -96,7 +94,7 @@ public class DriveUtils {
      * @param fileName  Name of the file which will be uploaded
      * @return  An Array of String with two elements {"file uploaded or not", "Name of the file after uploading"}
      */
-    public static String[] uploadToDrive(AbilityBot bot, EditMessageText editMsge, String fileName) {
+    public static String[] uploadToDrive(MessageQueue messageQueue, String fileName) {
         String[] result = {"false", ""};
         java.io.File uploadFile = new java.io.File(fileName);
         
@@ -134,7 +132,7 @@ public class DriveUtils {
             uploader.setChunkSize(MediaHttpUploader.MINIMUM_CHUNK_SIZE);
             
             // Add our Progress Listerner
-            uploader.setProgressListener(new DriveUploadProgressListener(bot, editMsge));
+            uploader.setProgressListener(new DriveUploadProgressListener(messageQueue));
 
             // Create the file
             File uploadedFile = create.execute();
