@@ -19,6 +19,7 @@ package io.github.dhina17.tgbot;
 
 import org.telegram.abilitybots.api.bot.AbilityBot;
 
+import io.github.dhina17.tgbot.abilities.Alive;
 import io.github.dhina17.tgbot.abilities.Dogbin;
 import io.github.dhina17.tgbot.abilities.DriveMirror;
 import io.github.dhina17.tgbot.abilities.Help;
@@ -28,7 +29,8 @@ public class DhinaBot extends AbilityBot {
 		super(BotConfig.BOT_TOKEN, BotConfig.BOT_USERNAME);
         addExtensions(new Dogbin(this),
                             new DriveMirror(this),
-                            new Help(this));
+                            new Help(this),
+                            new Alive(this));
 	}
 
 	@Override
