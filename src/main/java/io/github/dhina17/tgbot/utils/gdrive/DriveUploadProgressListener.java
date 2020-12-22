@@ -29,6 +29,7 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
 
     private MessageQueue messageQueue;
     private StringBuilder sb = new StringBuilder("[");
+    int count = 0;
 
     public DriveUploadProgressListener(MessageQueue mQueue) {
         this.messageQueue = mQueue;
@@ -55,7 +56,13 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
                 // Get the progress percent
                 String progress = NumberFormat.getPercentInstance().format(uploader.getProgress());
                 
-                sb.append("==");
+                // To show the appropriate progress.
+                // TO DO: Will fix this later
+                if(count < 20){
+                    sb.append("=");
+                    count++;
+                }
+
                 messageQueue.addEdit("Uploading...\n" + sb + "]\n" + progress + " of " + fileSize + "MB");
                 break;
             }
