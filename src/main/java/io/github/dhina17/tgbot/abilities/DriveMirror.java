@@ -29,9 +29,11 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.objects.Audio;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.Video;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
@@ -71,6 +73,12 @@ public class DriveMirror implements AbilityExtension{
                             if(replyToMessage.hasDocument()){
                                 Document doc = replyToMessage.getDocument();
                                 fileId = doc.getFileId();
+                            }else if(replyToMessage.hasAudio()){
+                                Audio audio = replyToMessage.getAudio();
+                                fileId = audio.getFileId();
+                            }else if(replyToMessage.hasVideo()){
+                                Video video = replyToMessage.getVideo();
+                                fileId = video.getFileId();
                             }
                         }else{
                             // Split the command to get the Download file link
