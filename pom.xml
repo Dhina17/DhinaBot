@@ -51,7 +51,7 @@
          <dependency>
             <groupId>it.tdlight</groupId>
             <artifactId>tdlight-java</artifactId>
-            <version>RELEASE</version>
+            <version>3.170.124</version>
           </dependency>
     </dependencies>
     <build>
