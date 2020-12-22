@@ -42,6 +42,6 @@ public class TDLibConfig {
     /**
      * Application version
      */
-    public static String APP_VERSION = "0.1";
+    public static String APP_VERSION = "0.2";
     
 }
