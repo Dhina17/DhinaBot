@@ -30,6 +30,7 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
     private MessageQueue messageQueue;
     private StringBuilder sb = new StringBuilder("[");
     int count = 0;
+    Boolean isEdited = false;
 
     public DriveUploadProgressListener(MessageQueue mQueue) {
         this.messageQueue = mQueue;
@@ -55,15 +56,26 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
             case MEDIA_IN_PROGRESS:{
                 // Get the progress percent
                 String progress = NumberFormat.getPercentInstance().format(uploader.getProgress());
-                
+                int uploadedPercent = Integer.parseInt(progress.split("%")[0]);
+
                 // To show the appropriate progress.
                 // TO DO: Will fix this later
-                if(count < 20){
-                    sb.append("=");
+                if(count < 10){
+                    sb.append("==");
                     count++;
                 }
 
-                messageQueue.addEdit("Uploading...\n" + sb + "]\n" + progress + " of " + fileSize + "MB");
+                // Just to avoid the delay of uploading the file.
+                // Actually upload completes faster but showing the progress will take time.
+                // TO DO: Will fix this in a better way later.
+                if(!isEdited && uploadedPercent != 0 && uploadedPercent % 10 == 0){
+                    messageQueue.addEdit("Uploading...\n" + sb + "]\n" + progress + " of " + fileSize + "MB");
+                    isEdited=true;
+                }else if(uploadedPercent != 0 && uploadedPercent % 10 != 0){
+                    isEdited = false;
+                }
+
+                
                 break;
             }
 
