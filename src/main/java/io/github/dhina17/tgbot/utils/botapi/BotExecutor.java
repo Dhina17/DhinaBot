@@ -31,6 +31,7 @@ public class BotExecutor {
     private AbilityBot bot;
     private Queue<Object> messages;
     private Timer timer;
+    private int emptyRun = 0;
 
     public BotExecutor(AbilityBot bot, MessageQueue msgeQueue){
         this.bot = bot;
@@ -56,6 +57,14 @@ public class BotExecutor {
                         execute((SendMessage) obj);
                     }else if(peek instanceof DeleteMessage) {
                         execute((DeleteMessage) obj);
+                    }
+                }else{
+                    emptyRun++;
+                    // Stop the timer when its run for nothing more than 15 mintues.
+                    // (15 * 4 = 60s = 1 mintue)
+                    // MessageQueue will not be empty for 15 minutes if there is any actual process even for bigger files.I hope so. 
+                    if(emptyRun>225){  // (15 * 15(count per minute) = 225)
+                        stop();
                     }
                 }
             }
