@@ -168,6 +168,7 @@ public class DriveMirror implements AbilityExtension{
                                                     SendMessage successMessage = new SendMessage();
                                                     successMessage.setChatId(String.valueOf(chatId));
                                                     successMessage.setParseMode(ParseMode.HTML);
+                                                    successMessage.setDisableWebPagePreview(true);
 
                                                     // Finalize the mirror link
                                                     String mirrorLink = GdriveConfig.GDRIVE_INDEX_LINK + uploadProcess.get()[1];
