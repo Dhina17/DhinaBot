@@ -47,11 +47,15 @@ public class DriveUtils {
         java.io.File uploadFile = new java.io.File(filePath);
         
         /*
-         *  Create file Meta-data and Set parent as TeamDrive
-         *  If you don't want to upload file to TeamDrive, Just nuke setParents() or Pass your folder ID or Drive ID
+         *  Create file Meta-data and Set parent as TeamDrive if USE_TEAM_DRIVE is true
          */
         File fileMetaData = new File();
-        fileMetaData.setParents(Collections.singletonList(GdriveConfig.TEAM_DRIVE_ID));
+
+        // Set parent as Team drive if you want to use team drive.
+        if(GdriveConfig.USE_TEAM_DRIVE){
+            fileMetaData.setParents(Collections.singletonList(GdriveConfig.TEAM_DRIVE_ID));
+        }
+
         fileMetaData.setName(uploadFile.getName());
 
         // Upload process
@@ -64,7 +68,7 @@ public class DriveUtils {
 
             // Initialize the create 
             Create create = driveService.files().create(fileMetaData, fileContent);
-            create.setSupportsTeamDrives(true); // Supports TeamDrive (Remove if you don't want)
+            create.setSupportsTeamDrives(GdriveConfig.USE_TEAM_DRIVE); // Team drive
 
             /**
              * Uploader

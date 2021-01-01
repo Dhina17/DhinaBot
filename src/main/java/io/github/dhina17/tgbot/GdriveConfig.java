@@ -19,6 +19,11 @@ package io.github.dhina17.tgbot;
 
 public class GdriveConfig {
 
+    /**
+     * Set true if you want to use Team drive
+     */
+    public static final Boolean USE_TEAM_DRIVE = false;
+
     /*
      * Place your TeamDrive ID here
      */
