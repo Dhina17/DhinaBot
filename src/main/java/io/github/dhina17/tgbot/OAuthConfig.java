@@ -22,15 +22,15 @@ public class OAuthConfig {
     /**
      * Your App name for OAuth 2.0 
      */
-    public static String APP_NAME = "DhinaBot";
+    public static final String APP_NAME = "DhinaBot";
 
     /**
      * Path to save the OAuth 2.0 tokens
      */
-    public static String TOKENS_PATH = "tokens";
+    public static final String TOKENS_PATH = "tokens";
 
     /**
      * Path of your OAuth client credentials file
      */
-    public static String CREDENTIALS_PATH = "/credentials.json";
+    public static final String CREDENTIALS_PATH = "/credentials.json";
 }
