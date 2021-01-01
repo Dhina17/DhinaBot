@@ -19,12 +19,15 @@ package io.github.dhina17.tgbot;
 
 import java.io.IOError;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.CompletableFuture;
 
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import io.github.dhina17.tgbot.utils.gdrive.DriveUtils;
+import io.github.dhina17.tgbot.utils.gdrive.OAuth;
 import io.github.dhina17.tgbot.utils.tgclient.AuthorizationUpdate;
 import io.github.dhina17.tgbot.utils.tgclient.Client;
 import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
@@ -62,6 +65,13 @@ public final class Main {
             }
 
         });
+
+        // Get drive service
+        try {
+			DriveUtils.driveService = OAuth.getDriveService();
+		} catch (IOException | GeneralSecurityException e1) {
+			e1.printStackTrace();
+		}
         
         try{
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
