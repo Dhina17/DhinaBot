@@ -91,10 +91,11 @@ public class DriveMirror implements AbilityExtension{
                         SendMessage message = new SendMessage();
                         message.setChatId(String.valueOf(chatId));
                         message.setReplyToMessageId(commandMessage.getMessageId());
+                        message.setParseMode(ParseMode.HTML);
 
                         // Check for the link
                         if(downloadUrl != null || fileId != null){
-                            message.setText("Getting Info...");
+                            message.setText("<b>Getting info...</b>");
                             final String remoteFileId = fileId;
                             final String dUrl = downloadUrl;
 
@@ -146,7 +147,7 @@ public class DriveMirror implements AbilityExtension{
                                                     String downloadedFilePath = downloadResult[1];
                                                     if(!isDownloaded){
                                                         String[] result = {"false", ""};
-                                                        messageQueue.addEdit("Download failed..");
+                                                        messageQueue.addEdit("❗️<b>Download failed.</b>");
                                                         return result;
                                                     }else{
                                                         return DriveUtils.uploadToDrive(messageQueue, downloadedFilePath);
@@ -155,7 +156,7 @@ public class DriveMirror implements AbilityExtension{
 
                                                 isFileUploaded = Boolean.parseBoolean(uploadProcess.get()[0]);
                                                 if(!isFileUploaded){
-                                                    messageQueue.addEdit("Upload failed..");
+                                                    messageQueue.addEdit("❗️<b>Upload failed.</b>");
                                                 }else{
                                                     // Get the filename
                                                     String fileName = uploadProcess.get()[1];
@@ -175,7 +176,10 @@ public class DriveMirror implements AbilityExtension{
                                                     String reqUserName = commandMessage.getFrom().getUserName(); // Get the mirror link requested user id
 
                                                     // Finalize the message text
-                                                    successMessage.setText(fileName + "\n\n<a href=\"" + mirrorLink + "\">Shareable link</a>\n\n" + "To: @" + reqUserName);
+                                                    String successText = "🔰 <b>FileName :</b> <code>" + fileName + "</code>\n\n" +
+                                                                                "🔗 <b>Link :</b> <a href=\"" + mirrorLink + "\">Here</a>\n\n" +
+                                                                                "👤 <b>To :</b> @" + reqUserName; 
+                                                    successMessage.setText(successText);
                                                     // send the final message
                                                     messageQueue.add(successMessage);
                                                 }
@@ -201,7 +205,7 @@ public class DriveMirror implements AbilityExtension{
 								e.printStackTrace();
 							}
                         }else{
-                            message.setText("Reply to a file or give link to mirror");
+                            message.setText("🔪 <b>Reply to a file or give link to mirror.</b>");
                             try {
 								bot.execute(message);
 							} catch (TelegramApiException e) {

@@ -28,8 +28,6 @@ import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 public class DriveUploadProgressListener implements MediaHttpUploaderProgressListener {
 
     private MessageQueue messageQueue;
-    private StringBuilder sb = new StringBuilder("[");
-    int count = 0;
     Boolean isEdited = false;
 
     public DriveUploadProgressListener(MessageQueue mQueue) {
@@ -46,7 +44,7 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
                 break;
 
             case INITIATION_STARTED:
-                messageQueue.addEdit("Uploading file initiating...");
+                messageQueue.addEdit("<b>🔄 Uploading initiating...</b>");
                 break;
 
             case INITIATION_COMPLETE:
@@ -55,21 +53,15 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
 
             case MEDIA_IN_PROGRESS:{
                 // Get the progress percent
-                String progress = NumberFormat.getPercentInstance().format(uploader.getProgress());
-                int uploadedPercent = Integer.parseInt(progress.split("%")[0]);
-
-                // To show the appropriate progress.
-                // TO DO: Will fix this later
-                if(count < 10){
-                    sb.append("==");
-                    count++;
-                }
+                String progressInPercent = NumberFormat.getPercentInstance().format(uploader.getProgress());
+                int uploadedPercent = Integer.parseInt(progressInPercent.split("%")[0]);
 
                 // Just to avoid the delay of uploading the file.
                 // Actually upload completes faster but showing the progress will take time.
                 // TO DO: Will fix this in a better way later.
                 if(!isEdited && uploadedPercent != 0 && uploadedPercent % 10 == 0){
-                    messageQueue.addEdit("Uploading...\n" + sb + "]\n" + progress + " of " + fileSize + "MB");
+                    String progress = "🔺 <b>Uploading :</b>\n<b>🕖 Progress :</b> <code>" + progressInPercent + " of " + fileSize + " MB</code>";
+                    messageQueue.addEdit(progress);
                     isEdited=true;
                 }else if(uploadedPercent != 0 && uploadedPercent % 10 != 0){
                     isEdited = false;
@@ -81,7 +73,7 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
 
                
             case MEDIA_COMPLETE:
-                messageQueue.addEdit("Upload completed.... Generating shareable link..");
+                messageQueue.addEdit("✅ <b>Upload completed.</b>");
                 break;
         }
 

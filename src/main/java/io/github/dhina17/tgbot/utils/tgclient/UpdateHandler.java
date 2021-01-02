@@ -31,7 +31,6 @@ public class UpdateHandler implements UpdatesHandler {
     private Boolean isDownloadingCompleted = false;
     private Boolean isDownloadingActive = false;
     private String filePath = null;
-    private StringBuilder sb = new StringBuilder("[");
     private Boolean isEdited = false;
 
     @Override
@@ -66,8 +65,7 @@ public class UpdateHandler implements UpdatesHandler {
                         // Actually download completes faster but showing the progress will take time.
                         // Will fix this in a better way later.
                         if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
-                            sb.append("==");
-                            String process = "Downloading : \n" + sb + "]\n" + dlFileSize + " / " + fileSize + " MB (" + downloadedPercent + " %)";
+                            String process = "🔻 <b>Downloading :</b>\n<b>🕖 Progress :</b> <code>" + downloadedPercent + "% of " + fileSize + " MB</code>";
                             messageQueue.addEdit(process);
                             isEdited=true;
                         }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){

@@ -72,9 +72,6 @@ public class FileUtils {
                 int downloaded = 0;
                 int downloadedPercent = 0;
 
-                StringBuilder sb = new StringBuilder();
-                sb.append("[");
-
                 Boolean isEdited = false;
 
                 while((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -86,8 +83,8 @@ public class FileUtils {
                     // Just to avoid the delay of downloading the file.(Actually download completes faster but showing the progress will take time)
                     // Will fix this in a better way later.
                     if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
-                        sb.append("==");
-                        messageQueue.addEdit("Downloading:\n\n"+fileName+"\n"+sb+"]\n"+downloadedPercent+"% of " + fileSize + " MB");
+                        String progress = "🔻 <b>Downloading :</b> <code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>" + downloadedPercent + "% of " + fileSize + " MB</code>";
+                        messageQueue.addEdit(progress);
                         isEdited=true;
                     }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){
                         isEdited = false;

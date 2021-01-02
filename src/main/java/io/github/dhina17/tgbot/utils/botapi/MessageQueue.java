@@ -20,6 +20,7 @@ package io.github.dhina17.tgbot.utils.botapi;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
 public class MessageQueue {
@@ -50,6 +51,7 @@ public class MessageQueue {
         editMessage = new EditMessageText();
         editMessage.setChatId(chatId);
         editMessage.setMessageId(messageId);
+        editMessage.setParseMode(ParseMode.HTML);
         editMessage.setText(text);
         add(editMessage);
     }
