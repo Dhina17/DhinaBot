@@ -19,6 +19,7 @@ package io.github.dhina17.tgbot.utils.tgclient;
 
 import java.util.List;
 
+import io.github.dhina17.tgbot.utils.ProgressUtils;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 import it.tdlight.common.UpdatesHandler;
 import it.tdlight.jni.TdApi;
@@ -49,16 +50,14 @@ public class UpdateHandler implements UpdatesHandler {
                     isDownloadingActive = updateFile.file.local.isDownloadingActive;
 
                     // Get the expected file size
-                    int fileSizeinBytes = updateFile.file.expectedSize;
-                    Double fileSizeinMB = fileSizeinBytes * Math.pow(10, -6);
-                    String fileSize = String.format("%.2f", fileSizeinMB);
+                    Integer fileSizeinBytes = updateFile.file.expectedSize;
+                    String fileSize = ProgressUtils.getSizeinMB(fileSizeinBytes.longValue());
 
                     // Get the downloaded file size
-                    int dlFileSizeinBytes = updateFile.file.local.downloadedSize;
-                    Double dlFileSizeinMB = dlFileSizeinBytes * Math.pow(10, -6);
-                    String dlFileSize = String.format("%.2f", dlFileSizeinMB);
+                    Integer dlFileSizeinBytes = updateFile.file.local.downloadedSize;
+                    String dlFileSize = ProgressUtils.getSizeinMB(dlFileSizeinBytes.longValue());
 
-                    int downloadedPercent = (int)(dlFileSizeinMB * 100 /fileSizeinMB);
+                    int downloadedPercent = ProgressUtils.getPercent(dlFileSizeinBytes.longValue(), fileSizeinBytes.longValue());
 
                     if(!isDownloadingCompleted){
                         // Just to avoid the delay of downloading the file.

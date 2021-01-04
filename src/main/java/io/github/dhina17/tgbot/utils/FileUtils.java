@@ -58,8 +58,7 @@ public class FileUtils {
             httpConnection.setRequestMethod("HEAD");
 
             long fileSizeinBytes = httpConnection.getContentLengthLong();
-            Double fileSizeinMB = fileSizeinBytes * Math.pow(10, -6);
-            String fileSize = String.format("%.2f", fileSizeinMB);
+            String fileSize = ProgressUtils.getSizeinMB(fileSizeinBytes);
 
             String fileName = getFileNameFromLink(link);
             File file = new File(fileName);
@@ -69,7 +68,7 @@ public class FileUtils {
                 
                 byte[] dataBuffer = new byte[1024];
                 int bytesRead;
-                int downloaded = 0;
+                Integer downloaded = 0;
                 int downloadedPercent = 0;
 
                 Boolean isEdited = false;
@@ -78,8 +77,9 @@ public class FileUtils {
                     out.write(dataBuffer, 0, bytesRead);
                     downloaded += bytesRead;
 
-                    downloadedPercent = (int) ((downloaded * 100) / fileSizeinBytes);
-
+                    // Get the percent
+                    downloadedPercent = ProgressUtils.getPercent(downloaded.longValue(), fileSizeinBytes);
+                    
                     // Just to avoid the delay of downloading the file.(Actually download completes faster but showing the progress will take time)
                     // Will fix this in a better way later.
                     if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){

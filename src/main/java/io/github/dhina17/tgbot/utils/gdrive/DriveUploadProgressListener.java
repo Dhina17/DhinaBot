@@ -23,6 +23,7 @@ import java.text.NumberFormat;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
 
+import io.github.dhina17.tgbot.utils.ProgressUtils;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
 public class DriveUploadProgressListener implements MediaHttpUploaderProgressListener {
@@ -36,8 +37,7 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
 
     @Override
     public void progressChanged(MediaHttpUploader uploader) throws IOException {
-        Double fileSizeInMB = uploader.getMediaContent().getLength() * Math.pow(10, -6);
-        String fileSize = String.format("%.2f", fileSizeInMB);
+        String fileSize = ProgressUtils.getSizeinMB(uploader.getMediaContent().getLength());
         switch (uploader.getUploadState()) {
             case NOT_STARTED:
                 // Do Nothing
