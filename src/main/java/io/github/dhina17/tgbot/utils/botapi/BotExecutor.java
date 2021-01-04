@@ -63,7 +63,8 @@ public class BotExecutor {
             }
 
         };
-        timer.scheduleAtFixedRate(task, 0, 4000);
+        timer.scheduleAtFixedRate(task, 0, 3160); // 60 / 19 = 3.16 (approx). Run 19 times/minute
+
     }
 
     public void execute(EditMessageText editMsge){
