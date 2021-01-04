@@ -64,7 +64,7 @@ public class UpdateHandler implements UpdatesHandler {
                         // Actually download completes faster but showing the progress will take time.
                         // Will fix this in a better way later.
                         if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
-                            String process = "🔻 <b>Downloading :</b>\n<b>🕖 Progress :</b> <code>" + downloadedPercent + "% of " + fileSize + " MB</code>";
+                            String process = "🔻 <b>Downloading :</b>\n<b>🕖 Progress :</b> <code>" + dlFileSize + " / " + fileSize + " MB</code>";
                             messageQueue.addEdit(process);
                             isEdited=true;
                         }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){

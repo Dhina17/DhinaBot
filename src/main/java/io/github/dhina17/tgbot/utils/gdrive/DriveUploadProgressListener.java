@@ -37,7 +37,8 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
 
     @Override
     public void progressChanged(MediaHttpUploader uploader) throws IOException {
-        String fileSize = ProgressUtils.getSizeinMB(uploader.getMediaContent().getLength());
+        Long fileSizeInBytes = uploader.getMediaContent().getLength();
+        String fileSize = ProgressUtils.getSizeinMB(fileSizeInBytes);
         switch (uploader.getUploadState()) {
             case NOT_STARTED:
                 // Do Nothing
@@ -55,12 +56,15 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
                 // Get the progress percent
                 String progressInPercent = NumberFormat.getPercentInstance().format(uploader.getProgress());
                 int uploadedPercent = Integer.parseInt(progressInPercent.split("%")[0]);
+            
+                // Get the progress in data
+                String progressInData = ProgressUtils.getPercentValue(fileSizeInBytes, uploadedPercent);
 
                 // Just to avoid the delay of uploading the file.
                 // Actually upload completes faster but showing the progress will take time.
                 // TO DO: Will fix this in a better way later.
                 if(!isEdited && uploadedPercent != 0 && uploadedPercent % 10 == 0){
-                    String progress = "🔺 <b>Uploading :</b>\n<b>🕖 Progress :</b> <code>" + progressInPercent + " of " + fileSize + " MB</code>";
+                    String progress = "🔺 <b>Uploading :</b>\n<b>🕖 Progress :</b> <code>" + progressInData + " / " + fileSize + " MB</code>";
                     messageQueue.addEdit(progress);
                     isEdited=true;
                 }else if(uploadedPercent != 0 && uploadedPercent % 10 != 0){
