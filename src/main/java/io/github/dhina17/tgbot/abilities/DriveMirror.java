@@ -148,6 +148,7 @@ public class DriveMirror implements AbilityExtension{
                                                     if(!isDownloaded){
                                                         String[] result = {"false", ""};
                                                         messageQueue.addEdit("❗️<b>Download failed.</b>");
+                                                        messageQueue.add("ENDS"); // To tell the excecutor this is the end(String object matters regardess of what text it is)
                                                         return result;
                                                     }else{
                                                         return DriveUtils.uploadToDrive(messageQueue, downloadedFilePath);
@@ -157,6 +158,7 @@ public class DriveMirror implements AbilityExtension{
                                                 isFileUploaded = Boolean.parseBoolean(uploadProcess.get()[0]);
                                                 if(!isFileUploaded){
                                                     messageQueue.addEdit("❗️<b>Upload failed.</b>");
+                                                    messageQueue.add("ENDS"); // To tell the executor this is end.
                                                 }else{
                                                     // Get the filename
                                                     String fileName = uploadProcess.get()[1];
@@ -182,6 +184,7 @@ public class DriveMirror implements AbilityExtension{
                                                     successMessage.setText(successText);
                                                     // send the final message
                                                     messageQueue.add(successMessage);
+                                                    messageQueue.add("ENDS"); // To tell the executor this is end.
                                                 }
                                             }catch(Exception e){
                                                 e.printStackTrace();
