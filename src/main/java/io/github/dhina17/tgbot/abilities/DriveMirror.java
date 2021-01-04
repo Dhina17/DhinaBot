@@ -143,6 +143,8 @@ public class DriveMirror implements AbilityExtension{
                                             try{
                                                 // Upload the file after getting response from the download process
                                                 CompletableFuture<String[]> uploadProcess = downloadProcess.thenApply( downloadResult -> {
+                                                    // Clear the queue as soon as the download process completed.
+                                                    messageQueue.getQueue().clear();
                                                     Boolean isDownloaded = Boolean.parseBoolean(downloadResult[0]);
                                                     String downloadedFilePath = downloadResult[1];
                                                     if(!isDownloaded){

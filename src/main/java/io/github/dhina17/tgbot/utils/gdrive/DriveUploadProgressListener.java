@@ -77,6 +77,8 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
 
                
             case MEDIA_COMPLETE:
+                // Clear the queue as soon as the upload completed.
+                messageQueue.getQueue().clear();
                 messageQueue.addEdit("✅ <b>Upload completed.</b>");
                 break;
         }
