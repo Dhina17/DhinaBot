@@ -27,12 +27,14 @@ public class TDLibConfig {
     /**
      * Put your Telegram API ID here
      */
-    public static int API_ID = 0;
+    public static int API_ID = Integer.parseInt(
+                                            System.getenv("API_ID")
+                                        );
 
     /**
      * Put your Telegram API HASH here
      */
-    public static String API_HASH = "";
+    public static String API_HASH = System.getenv("API_HASH");
 
     /**
      * DeviceName

@@ -22,17 +22,19 @@ public class GdriveConfig {
     /**
      * Set true if you want to use Team drive
      */
-    public static final Boolean USE_TEAM_DRIVE = false;
+    public static final Boolean USE_TEAM_DRIVE = Boolean.parseBoolean(
+                                                                        System.getenv("USE_TEAM_DRIVE")
+                                                                    );
 
     /*
      * Place your TeamDrive ID here
      */
 
-    public static final String TEAM_DRIVE_ID = "";
+    public static final String TEAM_DRIVE_ID = System.getenv("TEAM_DRIVE_ID");
 
     /*
      * Place your G-Index link here
      */
-    public static final String GDRIVE_INDEX_LINK = "";
+    public static final String GDRIVE_INDEX_LINK = System.getenv("GDRIVE_INDEX_LINK");
 
 }
