@@ -11,7 +11,7 @@
     </properties>
     <repositories>
         <repository>
-          <id>mchv-release</id>
+          <id>mchv</id>
           <name>MCHV Release Apache Maven Packages</name>
           <url>https://mvn.mchv.eu/repository/mchv</url>
         </repository>
@@ -51,7 +51,12 @@
          <dependency>
             <groupId>it.tdlight</groupId>
             <artifactId>tdlight-java</artifactId>
-            <version>3.170.124</version>
+            <version>4.171.57</version>
+          </dependency>
+          <dependency>
+            <groupId>it.tdlight</groupId>
+            <artifactId>tdlight-natives-linux-amd64</artifactId>
+            <version>3.2.52</version>
           </dependency>
     </dependencies>
     <build>

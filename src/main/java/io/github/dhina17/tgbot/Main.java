@@ -44,7 +44,8 @@ public final class Main {
             try {
                 // Initialize the TDlib
                 Init.start();
-                Client.client = ClientManager.create(TgClientUtils.updateHandler, null, null);
+                Client.client = ClientManager.create();
+                Client.client.initialize(TgClientUtils.updateHandler, null, null);
                 Client.client.execute(new TdApi.SetLogVerbosityLevel(0));
                 if (Client.client.execute(new TdApi.SetLogStream(
                         new TdApi.LogStreamFile("tdlib.log", 1 << 27, false))) instanceof TdApi.Error) {
