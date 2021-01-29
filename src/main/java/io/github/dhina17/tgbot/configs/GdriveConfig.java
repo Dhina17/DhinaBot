@@ -15,24 +15,26 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package io.github.dhina17.tgbot;
+package io.github.dhina17.tgbot.configs;
 
-public class BotConfig {
-    /*
-       Put your Bot token here
-    */
-    public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+public class GdriveConfig {
 
-    /*
-       Put your Bot username here
-    */
-    public static final String BOT_USERNAME = System.getenv("BOT_USERNAME");
+    /**
+     * Set true if you want to use Team drive
+     */
+    public static final Boolean USE_TEAM_DRIVE = Boolean.parseBoolean(
+                                                                        System.getenv("USE_TEAM_DRIVE")
+                                                                    );
 
     /*
-       Put your telegram user id here
-    */
-    public static final int CREATOR_ID = Integer.parseInt(
-                                                         System.getenv("CREATOR_ID")
-                                                      );
-    
+     * Place your TeamDrive ID here
+     */
+
+    public static final String TEAM_DRIVE_ID = System.getenv("TEAM_DRIVE_ID");
+
+    /*
+     * Place your G-Index link here
+     */
+    public static final String GDRIVE_INDEX_LINK = System.getenv("GDRIVE_INDEX_LINK");
+
 }

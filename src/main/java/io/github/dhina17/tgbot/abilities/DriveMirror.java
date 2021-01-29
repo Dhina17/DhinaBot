@@ -38,7 +38,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
-import io.github.dhina17.tgbot.GdriveConfig;
+import io.github.dhina17.tgbot.configs.GdriveConfig;
 import io.github.dhina17.tgbot.utils.FileUtils;
 import io.github.dhina17.tgbot.utils.botapi.BotExecutor;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;

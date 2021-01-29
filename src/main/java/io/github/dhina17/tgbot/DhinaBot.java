@@ -23,6 +23,7 @@ import io.github.dhina17.tgbot.abilities.Alive;
 import io.github.dhina17.tgbot.abilities.Dogbin;
 import io.github.dhina17.tgbot.abilities.DriveMirror;
 import io.github.dhina17.tgbot.abilities.Help;
+import io.github.dhina17.tgbot.configs.BotConfig;
 
 public class DhinaBot extends AbilityBot {
 	protected DhinaBot() {

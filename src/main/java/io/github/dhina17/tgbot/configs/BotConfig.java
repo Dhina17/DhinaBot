@@ -15,22 +15,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package io.github.dhina17.tgbot;
+package io.github.dhina17.tgbot.configs;
 
-public class OAuthConfig {
+public class BotConfig {
+    /*
+       Put your Bot token here
+    */
+    public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
 
-    /**
-     * Your App name for OAuth 2.0 
-     */
-    public static final String APP_NAME = "DhinaBot";
+    /*
+       Put your Bot username here
+    */
+    public static final String BOT_USERNAME = System.getenv("BOT_USERNAME");
 
-    /**
-     * Path to save the OAuth 2.0 tokens
-     */
-    public static final String TOKENS_PATH = "tokens";
-
-    /**
-     * Path of your OAuth client credentials file
-     */
-    public static final String CREDENTIALS_PATH = "/credentials.json";
+    /*
+       Put your telegram user id here
+    */
+    public static final int CREATOR_ID = Integer.parseInt(
+                                                         System.getenv("CREATOR_ID")
+                                                      );
+    
 }

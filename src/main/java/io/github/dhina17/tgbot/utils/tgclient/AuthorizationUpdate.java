@@ -22,7 +22,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.dhina17.tgbot.TDLibConfig;
+import io.github.dhina17.tgbot.configs.TDLibConfig;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi;
 import it.tdlight.jni.TdApi.AuthorizationState;

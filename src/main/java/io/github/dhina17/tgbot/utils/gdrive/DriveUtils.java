@@ -28,7 +28,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files.Create;
 import com.google.api.services.drive.model.File;
 
-import io.github.dhina17.tgbot.GdriveConfig;
+import io.github.dhina17.tgbot.configs.GdriveConfig;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
 public class DriveUtils {

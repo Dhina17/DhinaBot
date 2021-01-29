@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package io.github.dhina17.tgbot;
+package io.github.dhina17.tgbot.configs;
 
 public class TDLibConfig {
 

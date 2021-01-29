@@ -15,26 +15,22 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package io.github.dhina17.tgbot;
+package io.github.dhina17.tgbot.configs;
 
-public class GdriveConfig {
+public class OAuthConfig {
 
     /**
-     * Set true if you want to use Team drive
+     * Your App name for OAuth 2.0 
      */
-    public static final Boolean USE_TEAM_DRIVE = Boolean.parseBoolean(
-                                                                        System.getenv("USE_TEAM_DRIVE")
-                                                                    );
+    public static final String APP_NAME = "DhinaBot";
 
-    /*
-     * Place your TeamDrive ID here
+    /**
+     * Path to save the OAuth 2.0 tokens
      */
+    public static final String TOKENS_PATH = "tokens";
 
-    public static final String TEAM_DRIVE_ID = System.getenv("TEAM_DRIVE_ID");
-
-    /*
-     * Place your G-Index link here
+    /**
+     * Path of your OAuth client credentials file
      */
-    public static final String GDRIVE_INDEX_LINK = System.getenv("GDRIVE_INDEX_LINK");
-
+    public static final String CREDENTIALS_PATH = "/credentials.json";
 }

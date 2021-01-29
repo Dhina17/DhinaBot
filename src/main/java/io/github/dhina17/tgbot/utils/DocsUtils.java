@@ -26,7 +26,7 @@ import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import io.github.dhina17.tgbot.BotConfig;
+import io.github.dhina17.tgbot.configs.BotConfig;
 
 public class DocsUtils {
     

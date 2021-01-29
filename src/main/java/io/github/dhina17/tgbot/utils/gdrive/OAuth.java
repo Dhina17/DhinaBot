@@ -38,7 +38,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
-import io.github.dhina17.tgbot.OAuthConfig;
+import io.github.dhina17.tgbot.configs.OAuthConfig;
 
 public class OAuth {
 
