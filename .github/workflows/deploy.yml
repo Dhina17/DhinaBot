@@ -1,0 +1,41 @@
+name: Deploy CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+  
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Get the credentials
+      - name: Get the credentials
+        env:
+          CREDENTIALS_FILE_LINK: ${{secrets.CREDENTIALS_FILE}}
+          OAUTH_TOKEN_FILE_LINK: ${{secrets.OAUTH_TOKEN_FILE}}
+          TDLIB_SESSION_FILE_LINK: ${{secrets.TDLIB_SESSION_FILE}}
+        run: ./.github/workflows/get_credentials.sh
+
+      # Runs a single command using the runners shell
+      - name: Deploy to Heroku
+        uses: AkhileshNS/heroku-deploy@v3.8.8
+        with:
+          # This will be used for authentication. You can find it in your heroku homepage account settings
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          # Email that you use with heroku
+          heroku_email: "dhinalogu@gmail.com"
+          # The appname to use for deploying/updating
+          heroku_app_name: "shrouded-chamber-61058"
