@@ -83,7 +83,7 @@ public class DriveMirror implements AbilityExtension{
                         }else{
                             // Split the command to get the Download file link
                             String[] commandMessageTexts = commandMessage.getText().split(" ");
-                            if(commandMessageTexts.length > 0 && (commandMessageTexts[1].contains("https://") || commandMessageTexts[1].contains("http://"))){
+                            if(commandMessageTexts.length > 1 && (commandMessageTexts[1].contains("https://") || commandMessageTexts[1].contains("http://"))){
                                 downloadUrl = commandMessageTexts[1];
                             }
                         }
