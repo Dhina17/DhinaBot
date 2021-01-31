@@ -31,7 +31,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Deploy to Heroku
-        uses: Dhina17/heroku-deploy@master
+        uses: akhileshns/heroku-deploy@v3.9.9
         with:
           # This will be used for authentication. You can find it in your heroku homepage account settings
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
