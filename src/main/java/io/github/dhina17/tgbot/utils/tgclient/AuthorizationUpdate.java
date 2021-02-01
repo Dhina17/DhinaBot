@@ -17,7 +17,9 @@
 
 package io.github.dhina17.tgbot.utils.tgclient;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -39,7 +41,7 @@ public class AuthorizationUpdate {
     public static volatile boolean haveAuthorization = false;
     public static final Lock authorizationLock = new ReentrantLock();
     public static final Condition gotAuthorization = authorizationLock.newCondition();
-    
+
     public static void onAuthorizationStateUpdated(AuthorizationState authorizationState) {
         if (authorizationState != null) {
             AuthorizationUpdate.authorizationState = authorizationState;
@@ -61,12 +63,12 @@ public class AuthorizationUpdate {
                 break;
 
             case TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR:
-				Client.client.send(new TdApi.CheckDatabaseEncryptionKey(), authorizationRequestHandler);
+                Client.client.send(new TdApi.CheckDatabaseEncryptionKey(), authorizationRequestHandler);
                 break;
-                
+
             case AuthorizationStateWaitPhoneNumber.CONSTRUCTOR: {
                 System.out.println("Enter your phone number:");
-                String phoneNumber = new Scanner(System.in).nextLine();
+                String phoneNumber = getInput();
                 Client.client.send(new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null),
                         authorizationRequestHandler);
                 break;
@@ -74,19 +76,19 @@ public class AuthorizationUpdate {
 
             case AuthorizationStateWaitCode.CONSTRUCTOR: {
                 System.out.println("Enter Authencation code:");
-                String code = new Scanner(System.in).nextLine();
+                String code = getInput();
                 Client.client.send(new TdApi.CheckAuthenticationCode(code), authorizationRequestHandler);
                 break;
             }
             case TdApi.AuthorizationStateReady.CONSTRUCTOR:
-				haveAuthorization = true;
-				authorizationLock.lock();
-				try {
-					gotAuthorization.signal();
-				} finally {
-					authorizationLock.unlock();
-				}
-				break;
+                haveAuthorization = true;
+                authorizationLock.lock();
+                try {
+                    gotAuthorization.signal();
+                } finally {
+                    authorizationLock.unlock();
+                }
+                break;
         }
     }
 
@@ -106,6 +108,17 @@ public class AuthorizationUpdate {
                     System.err.println("Receive wrong response from TDLib: \n" + object);
             }
         }
+    }
+
+    public static String getInput() {
+        String str = "";
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            str = read.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return str;
     }
 
 }
