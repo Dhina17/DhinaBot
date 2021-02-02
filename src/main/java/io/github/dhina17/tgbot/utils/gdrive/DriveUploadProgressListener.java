@@ -29,10 +29,12 @@ import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 public class DriveUploadProgressListener implements MediaHttpUploaderProgressListener {
 
     private MessageQueue messageQueue;
+    private String fileName;
     Boolean isEdited = false;
 
-    public DriveUploadProgressListener(MessageQueue mQueue) {
+    public DriveUploadProgressListener(MessageQueue mQueue, String fileName) {
         this.messageQueue = mQueue;
+        this.fileName = fileName;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
                 // Actually upload completes faster but showing the progress will take time.
                 // TO DO: Will fix this in a better way later.
                 if(!isEdited && uploadedPercent != 0 && uploadedPercent % 10 == 0){
-                    String progress = "🔺 <b>Uploading :</b>\n<b>🕖 Progress :</b> <code>" + progressInData + " / " + fileSize + " MB</code>";
+                    String progress = "🔺 <b>Uploading : </b><code>"+ fileName + "</code>\n<b>🕖 Progress :</b> <code>" + progressInData + " / " + fileSize + " MB</code>";
                     messageQueue.addEdit(progress);
                     isEdited=true;
                 }else if(uploadedPercent != 0 && uploadedPercent % 10 != 0){

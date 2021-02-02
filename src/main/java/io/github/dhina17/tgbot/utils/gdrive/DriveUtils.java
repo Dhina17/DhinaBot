@@ -81,7 +81,7 @@ public class DriveUtils {
             uploader.setChunkSize(MediaHttpUploader.MINIMUM_CHUNK_SIZE);
             
             // Add our Progress Listerner
-            uploader.setProgressListener(new DriveUploadProgressListener(messageQueue));
+            uploader.setProgressListener(new DriveUploadProgressListener(messageQueue, uploadFile.getName()));
 
             // Create the file
             File uploadedFile = create.execute();
