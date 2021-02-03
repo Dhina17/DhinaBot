@@ -53,10 +53,11 @@ public class Help implements AbilityExtension {
                     int commandMessageId = commandMessage.getMessageId();
 
                     final String helpMessage = "Available commands:\n\n"
-                            + "1) /paste - Reply to a text or document(text mime) to get dogbin link\n\n"
-                            + "2) /getpaste  - Reply to a dogbin link to get its content\n\n"
-                            + "3) /mirror - Usage : /mirror <link>  or Reply to a file to mirror\n\n"
-                            + "4) /help - To get a help(this message)";
+                            + "1) /alive - Just to check whether I m alive or not.\n\n"
+                            + "2) /paste - Reply to a text or document(text mime) to get dogbin link.\n\n"
+                            + "3) /getpaste  - Reply to a dogbin link to get its content.\n\n"
+                            + "4) /mirror - Usage : /mirror <link>  or Reply to a file to mirror.\n\n"
+                            + "5) /help - To get a help(this message).";
 
                     SendMessage message = new SendMessage();
                     message.setChatId(String.valueOf(chatId));
