@@ -33,7 +33,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
@@ -42,7 +42,7 @@ import io.github.dhina17.tgbot.configs.OAuthConfig;
 
 public class OAuth {
 
-    public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    public static final JsonFactory GSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
 
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
@@ -51,10 +51,10 @@ public class OAuth {
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + OAuthConfig.CREDENTIALS_PATH);
         }
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(GSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, GSON_FACTORY,
                 clientSecrets, SCOPES)
                         .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(OAuthConfig.TOKENS_PATH)))
                         .setAccessType("offline")
@@ -67,7 +67,7 @@ public class OAuth {
     public static Drive getDriveService() throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, GSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(OAuthConfig.APP_NAME)
                 .build();
 
