@@ -19,7 +19,9 @@ package io.github.dhina17.tgbot.utils.gdrive;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collections;
 
 import com.google.api.client.googleapis.media.MediaHttpUploader;
@@ -97,4 +99,40 @@ public class DriveUtils {
         }
         return result;
     }
+
+    /**
+     * 
+     * @param messageQueue Queue which contains all bot methods to be executed
+     * @param fileId Fileid of the file to be downloaded
+     * @return An array of String with two elements {"file downloaded or not", "Name of the file"}
+     */
+	public static String[] downloadFromDrive(MessageQueue messageQueue, String fileId) {
+        String[] result = {"false", ""};
+        try {
+            // Create the request
+            Drive.Files.Get request = driveService.files()
+                                                .get(fileId)
+                                                .setSupportsAllDrives(true)
+                                                .setFields("name,size"); // Name and size are enough
+            
+            // Execute and get the file metadata
+            File downloadFile = request.execute();
+            String fileName = downloadFile.getName();
+            Long fileSize = downloadFile.getSize();
+
+            // Download the file
+            OutputStream out = new FileOutputStream(fileName);
+            request.getMediaHttpDownloader().setProgressListener(
+                            new DriveDownloadProgressListener(messageQueue, fileName, fileSize));
+            request.executeMediaAndDownloadTo(out);
+            
+            // Finalize the result
+            result[0] = "true";
+            result[1] = fileName;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+        }
+        return result;
+	}
 }

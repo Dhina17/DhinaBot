@@ -68,6 +68,7 @@ public class DriveMirror implements AbilityExtension{
                         Message replyToMessage = commandMessage.getReplyToMessage();
                         String fileId = null;
                         String downloadUrl = null;
+                        Boolean isGdriveLink = false;
 
                         if(isReply){
                             if(replyToMessage.hasDocument()){
@@ -84,7 +85,15 @@ public class DriveMirror implements AbilityExtension{
                             // Split the command to get the Download file link
                             String[] commandMessageTexts = commandMessage.getText().split(" ");
                             if(commandMessageTexts.length > 1 && (commandMessageTexts[1].contains("https://") || commandMessageTexts[1].contains("http://"))){
-                                downloadUrl = commandMessageTexts[1];
+                                String url = commandMessageTexts[1];
+                                // Check for Gdrive file link . [TODO: Folders]
+                                if(url.contains("https://drive.google.com/file/")){
+                                    String[] splitUrl = url.split("/");
+                                    downloadUrl = splitUrl[5];
+                                    isGdriveLink = true;
+                                }else{
+                                    downloadUrl = commandMessageTexts[1];
+                                }
                             }
                         }
 
@@ -98,6 +107,7 @@ public class DriveMirror implements AbilityExtension{
                             message.setText("<b>Getting info...</b>");
                             final String remoteFileId = fileId;
                             final String dUrl = downloadUrl;
+                            final Boolean isGdriveUrl = isGdriveLink;
 
                             try {
 								bot.executeAsync(message, new SentCallback<Message>(){
@@ -126,7 +136,11 @@ public class DriveMirror implements AbilityExtension{
                                             if(isReply){
                                                 return TgClientUtils.dowloadFile(remoteFileId);
                                             }else{
-                                                return FileUtils.downloadFile(messageQueue, dUrl);
+                                                if(isGdriveUrl){
+                                                    return DriveUtils.downloadFromDrive(messageQueue, dUrl);
+                                                }else{
+                                                    return FileUtils.downloadFile(messageQueue, dUrl);
+                                                }
                                             }
                                             
                                         });
