@@ -67,6 +67,7 @@ public class DriveMirror implements AbilityExtension{
                         Boolean isReply = commandMessage.isReply();
                         Message replyToMessage = commandMessage.getReplyToMessage();
                         String fileId = null;
+                        String docFileName = null;
                         String downloadUrl = null;
                         Boolean isGdriveLink = false;
 
@@ -74,12 +75,15 @@ public class DriveMirror implements AbilityExtension{
                             if(replyToMessage.hasDocument()){
                                 Document doc = replyToMessage.getDocument();
                                 fileId = doc.getFileId();
+                                docFileName = doc.getFileName();
                             }else if(replyToMessage.hasAudio()){
                                 Audio audio = replyToMessage.getAudio();
                                 fileId = audio.getFileId();
+                                docFileName = audio.getFileName();
                             }else if(replyToMessage.hasVideo()){
                                 Video video = replyToMessage.getVideo();
                                 fileId = video.getFileId();
+                                docFileName = video.getFileName();
                             }
                         }else{
                             // Split the command to get the Download file link
@@ -108,6 +112,7 @@ public class DriveMirror implements AbilityExtension{
                             final String remoteFileId = fileId;
                             final String dUrl = downloadUrl;
                             final Boolean isGdriveUrl = isGdriveLink;
+                            final String docName = docFileName;
 
                             try {
 								bot.executeAsync(message, new SentCallback<Message>(){
@@ -134,7 +139,7 @@ public class DriveMirror implements AbilityExtension{
                                         // Dowloading the file in async way
                                         CompletableFuture<String[]> downloadProcess = CompletableFuture.supplyAsync(() -> {
                                             if(isReply){
-                                                return TgClientUtils.dowloadFile(remoteFileId);
+                                                return TgClientUtils.dowloadFile(remoteFileId, docName);
                                             }else{
                                                 if(isGdriveUrl){
                                                     return DriveUtils.downloadFromDrive(messageQueue, dUrl);

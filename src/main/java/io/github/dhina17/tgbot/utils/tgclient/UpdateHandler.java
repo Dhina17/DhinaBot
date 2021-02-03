@@ -32,6 +32,7 @@ public class UpdateHandler implements UpdatesHandler {
     private Boolean isDownloadingCompleted = false;
     private Boolean isDownloadingActive = false;
     private String filePath = null;
+    private String fileName = null;
     private Boolean isEdited = false;
 
     @Override
@@ -64,7 +65,7 @@ public class UpdateHandler implements UpdatesHandler {
                         // Actually download completes faster but showing the progress will take time.
                         // Will fix this in a better way later.
                         if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
-                            String process = "🔻 <b>Downloading :</b>\n<b>🕖 Progress :</b> <code>" + dlFileSize + " / " + fileSize + " MB</code>";
+                            String process = "🔻 <b>Downloading : </b><code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>" + dlFileSize + " / " + fileSize + " MB</code>";
                             messageQueue.addEdit(process);
                             isEdited=true;
                         }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){
@@ -91,6 +92,10 @@ public class UpdateHandler implements UpdatesHandler {
 
     public String getFilePath(){
         return filePath;
+    }
+
+    public void setFileName(String filename){
+        this.fileName = filename;
     }
     
 }

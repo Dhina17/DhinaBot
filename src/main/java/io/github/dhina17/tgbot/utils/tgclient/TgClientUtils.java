@@ -30,7 +30,7 @@ public class TgClientUtils {
     // Create update handler to get updates from Tdlib
     public static UpdateHandler updateHandler = new UpdateHandler();
 
-    public static String[] dowloadFile(String remoteFileId) {
+    public static String[] dowloadFile(String remoteFileId, String fileName) {
         String[] result = {"false", ""};
         GetRemoteFile getRemoteFile = new GetRemoteFile();
         getRemoteFile.remoteFileId = remoteFileId;
@@ -40,12 +40,19 @@ public class TgClientUtils {
             public void onResult(Object object) {
                 File remoteFile = (File) object;
                 int remoteFileId = remoteFile.id;
+
+                // Set up the download file
                 DownloadFile downloadFile = new DownloadFile();
                 downloadFile.fileId = remoteFileId;
                 downloadFile.offset = 0;
                 downloadFile.limit = 0;
                 downloadFile.synchronous = false;
                 downloadFile.priority = 1;
+
+                // Set the file name before start the download process
+                updateHandler.setFileName(fileName);
+
+                // Start the download
                 Client.client.send(downloadFile, new ResultHandler() {
 
                     @Override
