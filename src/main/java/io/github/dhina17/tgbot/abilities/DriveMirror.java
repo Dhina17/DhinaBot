@@ -176,8 +176,9 @@ public class DriveMirror implements AbilityExtension{
                                                     messageQueue.addEdit("❗️<b>Upload failed.</b>");
                                                     messageQueue.add("ENDS"); // To tell the executor this is end.
                                                 }else{
-                                                    // Get the filename
+                                                    // Get the file name and file size
                                                     String fileName = uploadProcess.get()[1];
+                                                    String fileSize = uploadProcess.get()[2];
 
                                                     // Delete the Progress Message from the bot
                                                     DeleteMessage dMsge = new DeleteMessage(String.valueOf(chatId), editMsgeId);
@@ -195,6 +196,7 @@ public class DriveMirror implements AbilityExtension{
 
                                                     // Finalize the message text
                                                     String successText = "🔰 <b>FileName :</b> <code>" + fileName + "</code>\n\n" +
+                                                                                "💾 <b>Size :</b> <code>" + fileSize + " MB</code>\n\n" +
                                                                                 "🔗 <b>Link :</b> <a href=\"" + mirrorLink + "\">Here</a>\n\n" +
                                                                                 "👤 <b>To :</b> @" + reqUserName; 
                                                     successMessage.setText(successText);

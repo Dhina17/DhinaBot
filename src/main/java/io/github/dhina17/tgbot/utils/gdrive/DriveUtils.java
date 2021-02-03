@@ -31,6 +31,7 @@ import com.google.api.services.drive.Drive.Files.Create;
 import com.google.api.services.drive.model.File;
 
 import io.github.dhina17.tgbot.configs.GdriveConfig;
+import io.github.dhina17.tgbot.utils.ProgressUtils;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
 public class DriveUtils {
@@ -42,10 +43,10 @@ public class DriveUtils {
      * 
      * @param messageQueue Queue which contains all bot methods to be executed 
      * @param filePath  Path of the file which will be uploaded
-     * @return  An Array of String with two elements {"file uploaded or not", "Name of the file after uploading"}
+     * @return  An array of String with two elements {"file uploaded or not", "Name of the file after uploading", "Size of the uploaded file"}
      */
     public static String[] uploadToDrive(MessageQueue messageQueue, String filePath) {
-        String[] result = {"false", ""};
+        String[] result = {"false", "", ""};
         java.io.File uploadFile = new java.io.File(filePath);
         
         /*
@@ -71,6 +72,7 @@ public class DriveUtils {
             // Initialize the create 
             Create create = driveService.files().create(fileMetaData, fileContent);
             create.setSupportsTeamDrives(GdriveConfig.USE_TEAM_DRIVE); // Team drive
+            create.setFields("name,size"); // set required fields from the response
 
             /**
              * Uploader
@@ -91,6 +93,7 @@ public class DriveUtils {
             // For our result
             result[0] = "true";
             result[1] = uploadedFile.getName();
+            result[2] = ProgressUtils.getSizeinMB(uploadedFile.getSize());
 
             // Delete the local file. We don't need this anymore
             uploadFile.delete();
