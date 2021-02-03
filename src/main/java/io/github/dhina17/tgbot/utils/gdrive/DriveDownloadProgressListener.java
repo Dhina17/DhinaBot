@@ -41,7 +41,7 @@ public class DriveDownloadProgressListener implements MediaHttpDownloaderProgres
                 // Actually download completes faster but showing the progress will take time.
                 // TO DO: Will fix this in a better way later.
                 if (!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0) {
-                    String progress = "🔺 <b>Uploading : </b><code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>"
+                    String progress = "🔺 <b>Downloading : </b><code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>"
                             + progressInData + " / " + fileSize + " MB</code>";
                     messageQueue.addEdit(progress);
                     isEdited = true;
