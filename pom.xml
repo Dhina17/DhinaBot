@@ -142,15 +142,9 @@
         <!--
         This profile enables jacoco when unit tests are run.
         You can run it with mvn -P jacoco test.
-        It also activates itself on Travis.
         -->
         <profile>
             <id>jacoco</id>
-            <activation>
-                <property>
-                    <name>env.TRAVIS</name>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -172,42 +166,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!--
-        For the Travis profile:
-        - we want to break the build on any checkstyle violation.
-        - we want to be able to publish coverage report to coveralls.
-        -->
-        <profile>
-            <id>travis</id>
-            <activation>
-                <property>
-                    <name>env.TRAVIS</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>checkstyle</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.eluder.coveralls</groupId>
-                        <artifactId>coveralls-maven-plugin</artifactId>
-                        <version>4.3.0</version>
                     </plugin>
                 </plugins>
             </build>
