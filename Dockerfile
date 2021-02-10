@@ -12,8 +12,9 @@ RUN mvn clean package assembly:single -f "/tmp/bot/pom.xml"
 # Stage - Execute the compiled jar
 FROM archlinux:base as runstage 
 
-# Install openjdk JRE
-RUN pacman -Sy --noconfirm jre-openjdk
+# Update the base and install openjdk JRE
+RUN pacman -Syu --noconfirm; \
+      pacman -S --noconfirm jre-openjdk
 
 WORKDIR /app
 
