@@ -10,7 +10,7 @@ COPY . .
 RUN mvn clean package assembly:single -f "/tmp/bot/pom.xml"
 
 # Stage - Execute the compiled jar
-FROM archlinux:base as runstage 
+FROM archlinux/archlinux:base as runstage
 
 # Update the base and install openjdk JRE
 RUN pacman -Syu --noconfirm; \
