@@ -7,13 +7,13 @@ WORKDIR /tmp/bot
 COPY pom.xml .
 
 # Download the dependencies
-RUN mvn dependency:go-offline
+RUN mvn dependency:go-offline -B
 
 # Copy the source to the work dir
 COPY . .
 
 # Build the jar
-RUN mvn clean package assembly:single -f "/tmp/bot/pom.xml"
+RUN mvn clean package assembly:single -f "/tmp/bot/pom.xml" -B
 
 # Stage - Execute the compiled jar
 FROM archlinux/archlinux:base as runstage
