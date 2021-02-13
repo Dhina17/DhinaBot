@@ -3,7 +3,13 @@ FROM maven:3.6.3-jdk-11-slim as buildstage
 
 WORKDIR /tmp/bot
 
-# Copy the source to work directory
+# Copy the pom.xml to the work dir
+COPY pom.xml .
+
+# Download the dependencies
+RUN mvn dependency:go-offline
+
+# Copy the source to the work dir
 COPY . .
 
 # Build the jar
