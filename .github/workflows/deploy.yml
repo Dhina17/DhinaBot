@@ -39,4 +39,12 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           # The appname to use for deploying/updating
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-
+        env:
+          HD_API_HASH: ${{secrets.API_HASH}}
+          HD_API_ID: ${{secrets.API_ID}}
+          HD_BOT_TOKEN: ${{secrets.BOT_TOKEN}}
+          HD_BOT_USERNAME: ${{secrets.BOT_USERNAME}}
+          HD_CREATOR_ID: ${{secrets.CREATOR_ID}}
+          HD_GDRIVE_INDEX_LINK: ${{secrets.GDRIVE_INDEX_LINK}}
+          HD_TEAM_DRIVE_ID: ${{secrets.TEAM_DRIVE_ID}}
+          HD_USE_TEAM_DRIVE: ${{secrets.USE_TEAM_DRIVE}}
