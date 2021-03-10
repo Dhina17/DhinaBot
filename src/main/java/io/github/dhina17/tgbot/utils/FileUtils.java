@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,9 +25,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
 public class FileUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
+
     public static String getFileNameFromLink(String link) {
         String fileName = null;
         try {
@@ -36,7 +42,7 @@ public class FileUtils {
             fileName = filePath.substring(filePath.lastIndexOf('/')+1);
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.error("Error with link",e);
         }
         return fileName;
     }
@@ -104,12 +110,12 @@ public class FileUtils {
                 return result;
 
             } catch(Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Download failed",e);
                 return result;
             }
 
         }catch(IOException e){
-            e.printStackTrace();
+            LOGGER.error("Download failed",e);
             return result;
         }
     } 

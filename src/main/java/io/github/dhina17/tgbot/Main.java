@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -37,6 +39,9 @@ import it.tdlight.jni.TdApi;
 import it.tdlight.tdlight.ClientManager;
 
 public final class Main {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    
     public static void main(String[] args) {
 
         @SuppressWarnings("unused")
@@ -57,12 +62,12 @@ public final class Main {
                         AuthorizationUpdate.gotAuthorization.await();
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Authorization Interrupted",e);
                 } finally {
                     AuthorizationUpdate.authorizationLock.unlock();
                 }
             } catch (CantLoadLibrary e1) {
-                e1.printStackTrace();
+                LOGGER.error("Failed to load library",e1);
             }
 
         });
@@ -70,16 +75,17 @@ public final class Main {
         // Get drive service
         try {
 			DriveUtils.driveService = OAuth.getDriveService();
+            LOGGER.info("OAuth authentication completed successfully");
 		} catch (IOException | GeneralSecurityException e1) {
-			e1.printStackTrace();
+			LOGGER.error("OAuth failed", e1);
 		}
         
         try{
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(new DhinaBot());
-        System.out.println("Bot deployed successfully");
+        LOGGER.info("Bot registered successfully");
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            LOGGER.error("Bot registration failed", e);
         }
     }
 }

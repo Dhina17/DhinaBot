@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +30,9 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files.Create;
 import com.google.api.services.drive.model.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.dhina17.tgbot.configs.GdriveConfig;
 import io.github.dhina17.tgbot.utils.ProgressUtils;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
@@ -38,6 +41,7 @@ public class DriveUtils {
     
     // Static drive service
     public static Drive driveService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DriveUtils.class);
 
     /**
      * 
@@ -98,7 +102,7 @@ public class DriveUtils {
             // Delete the local file. We don't need this anymore
             uploadFile.delete();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Upload Failed",e);
         }
         return result;
     }
@@ -134,7 +138,7 @@ public class DriveUtils {
             result[1] = fileName;
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Download failed",e);
         }
         return result;
 	}

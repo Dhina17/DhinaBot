@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ package io.github.dhina17.tgbot.abilities;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Locality;
@@ -48,6 +50,7 @@ import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
 public class DriveMirror implements AbilityExtension{
 
     private AbilityBot bot;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DriveMirror.class);
 
     public DriveMirror(AbilityBot bot) {
         this.bot = bot;
@@ -153,9 +156,9 @@ public class DriveMirror implements AbilityExtension{
                                         try {
                                             isFileDownloaded = Boolean.parseBoolean(downloadProcess.get()[0]);
 									    } catch (InterruptedException e) {
-									        e.printStackTrace();
+									        LOGGER.error("Download Process Interrupted",e);
 									    } catch (ExecutionException e) {
-										    e.printStackTrace();
+										    LOGGER.error("Failed to execute the process",e);
                                         }
 
                                         if(isFileDownloaded){
@@ -210,7 +213,7 @@ public class DriveMirror implements AbilityExtension{
                                                     messageQueue.add("ENDS"); // To tell the executor this is end.
                                                 }
                                             }catch(Exception e){
-                                                e.printStackTrace();
+                                                LOGGER.error("Unable to upload",e);
                                             }
                                         }
 									}
@@ -218,24 +221,24 @@ public class DriveMirror implements AbilityExtension{
 									@Override
 									public void onError(BotApiMethod<Message> method,
 											TelegramApiRequestException apiException) {
-                                        apiException.printStackTrace();
+                                            LOGGER.error("Failed to execute the method",apiException);
 									}
 
 									@Override
 									public void onException(BotApiMethod<Message> method, Exception exception) {
-                                        exception.printStackTrace();
+                                        LOGGER.error("Failed to execute the method", exception);
 									}
 
 								});
 							} catch (TelegramApiException e) {
-								e.printStackTrace();
+								LOGGER.error("Failed to execute the method",e);
 							}
                         }else{
                             message.setText("🔪 <b>Reply to a file or give link to mirror.</b>");
                             try {
 								bot.execute(message);
 							} catch (TelegramApiException e) {
-								e.printStackTrace();
+								LOGGER.error("Failed to execute the method",e);
 							}
                         }
                     })

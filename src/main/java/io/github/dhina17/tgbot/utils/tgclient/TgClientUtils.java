@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,9 @@ package io.github.dhina17.tgbot.utils.tgclient;
 
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi.DownloadFile;
 import it.tdlight.jni.TdApi.File;
@@ -27,6 +30,7 @@ import it.tdlight.jni.TdApi.Object;
 
 public class TgClientUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TgClientUtils.class);
     // Create update handler to get updates from Tdlib
     public static UpdateHandler updateHandler = new UpdateHandler();
 
@@ -74,7 +78,7 @@ public class TgClientUtils {
                 isDownloading = downloadStatus[0];
                 isDownloadCompleted = downloadStatus[1];
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.error("Failed to wait",e);
             }
         }
 

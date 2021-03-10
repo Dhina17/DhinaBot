@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.dhina17.tgbot.configs.TDLibConfig;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi;
@@ -41,6 +44,7 @@ public class AuthorizationUpdate {
     public static volatile boolean haveAuthorization = false;
     public static final Lock authorizationLock = new ReentrantLock();
     public static final Condition gotAuthorization = authorizationLock.newCondition();
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationUpdate.class);
 
     public static void onAuthorizationStateUpdated(AuthorizationState authorizationState) {
         if (authorizationState != null) {
@@ -98,14 +102,14 @@ public class AuthorizationUpdate {
         public void onResult(it.tdlight.jni.TdApi.Object object) {
             switch (object.getConstructor()) {
                 case TdApi.Error.CONSTRUCTOR:
-                    System.err.println("Receive an error:\n" + object);
+                    LOGGER.error("Receive an error",object);
                     onAuthorizationStateUpdated(null); // repeat last action
                     break;
                 case TdApi.Ok.CONSTRUCTOR:
                     // result is already received through UpdateAuthorizationState, nothing to do
                     break;
                 default:
-                    System.err.println("Receive wrong response from TDLib: \n" + object);
+                    LOGGER.error("Receive wrong response from TDLib", object);
             }
         }
     }
@@ -116,7 +120,7 @@ public class AuthorizationUpdate {
         try {
             str = read.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to read",e);
         }
         return str;
     }

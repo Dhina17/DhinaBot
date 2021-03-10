@@ -11,9 +11,9 @@
     </properties>
     <repositories>
         <repository>
-          <id>mchv</id>
-          <name>MCHV Release Apache Maven Packages</name>
-          <url>https://mvn.mchv.eu/repository/mchv</url>
+            <id>mchv</id>
+            <name>MCHV Release Apache Maven Packages</name>
+            <url>https://mvn.mchv.eu/repository/mchv</url>
         </repository>
     </repositories>
     <dependencies>
@@ -32,32 +32,37 @@
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-abilities</artifactId>
             <version>5.0.1</version>
-         </dependency>
-         <dependency>
-             <groupId>com.google.api-client</groupId>
-             <artifactId>google-api-client</artifactId>
-             <version>1.31.2</version>
-         </dependency>
-         <dependency>
-             <groupId>com.google.oauth-client</groupId>
-             <artifactId>google-oauth-client-jetty</artifactId>
-             <version>1.31.4</version>
-         </dependency>
-         <dependency>
-             <groupId>com.google.apis</groupId>
-             <artifactId>google-api-services-drive</artifactId>
-             <version>v3-rev20201130-1.31.0</version>
-         </dependency>
-         <dependency>
+        </dependency>
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>1.31.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+            <version>1.31.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-drive</artifactId>
+            <version>v3-rev20201130-1.31.0</version>
+        </dependency>
+        <dependency>
             <groupId>it.tdlight</groupId>
             <artifactId>tdlight-java</artifactId>
             <version>4.171.62</version>
-          </dependency>
-          <dependency>
+        </dependency>
+        <dependency>
             <groupId>it.tdlight</groupId>
             <artifactId>tdlight-natives-linux-amd64</artifactId>
             <version>3.2.52</version>
-          </dependency>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.30</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

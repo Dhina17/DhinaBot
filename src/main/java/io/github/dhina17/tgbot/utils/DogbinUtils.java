@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,10 +26,13 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DogbinUtils {
     
     public static final String DELDOG_URL = "https://del.dog/";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DogbinUtils.class);
 
     public static String getDogbinUrl(String text) {
 
@@ -50,7 +53,7 @@ public class DogbinUtils {
      		}  
 
     	}catch (IOException | InterruptedException e) {
-      		e.printStackTrace();
+        LOGGER.error("Request failed",e);
     	}
 
     	return finalContent;
@@ -71,7 +74,7 @@ public class DogbinUtils {
                 finalContent = response.body().toString();
           }
         }catch(IOException | InterruptedException e) {
-          e.printStackTrace();
+          LOGGER.error("Request failed",e);
         }
                                                   
         return finalContent;

@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -29,6 +31,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class BotExecutor {
     private AbilityBot bot;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BotExecutor.class);
     private Queue<Object> messages;
     private Timer timer;
 
@@ -72,7 +75,7 @@ public class BotExecutor {
         try {
             bot.execute(editMsge);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to execute the method",e);
         }
 
     }
@@ -81,7 +84,7 @@ public class BotExecutor {
         try {
             bot.execute(msge);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to execute the method",e);
         }
     }
 
@@ -89,7 +92,7 @@ public class BotExecutor {
         try {
             bot.execute(dmsge);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to execute the method",e);
         }
     }
 

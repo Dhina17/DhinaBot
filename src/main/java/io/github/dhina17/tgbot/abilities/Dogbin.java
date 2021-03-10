@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 
 package io.github.dhina17.tgbot.abilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Locality;
@@ -34,6 +36,7 @@ import io.github.dhina17.tgbot.utils.DogbinUtils;
 public class Dogbin implements AbilityExtension {
 
     private AbilityBot bot;
+	private static final Logger LOGGER = LoggerFactory.getLogger(Dogbin.class);
 
     public Dogbin(AbilityBot bot) {
         this.bot = bot;
@@ -101,7 +104,7 @@ public class Dogbin implements AbilityExtension {
                         try {
                             bot.execute(message);
                         } catch (TelegramApiException e) {
-                            e.printStackTrace();
+							LOGGER.error("Failed to execute the method",e);
                         }
 					})
 					.build( );
@@ -156,7 +159,7 @@ public class Dogbin implements AbilityExtension {
 							try {
                                 bot.execute(message);
                             } catch (TelegramApiException e) {
-                                e.printStackTrace();
+                                LOGGER.error("Failed to execute the method",e);
                             }
 
 						})

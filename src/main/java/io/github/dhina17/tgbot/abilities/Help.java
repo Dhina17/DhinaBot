@@ -17,6 +17,8 @@
 
 package io.github.dhina17.tgbot.abilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Locality;
@@ -30,6 +32,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class Help implements AbilityExtension {
 
     private AbilityBot bot;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Help.class);
 
     public Help(AbilityBot bot) {
         this.bot = bot;
@@ -68,7 +71,7 @@ public class Help implements AbilityExtension {
                     try {
                         bot.execute(message);
                     } catch (TelegramApiException e) {
-                        e.printStackTrace();
+                        LOGGER.error("Failed to execute the method",e);
                     }
                     })
                     .build();

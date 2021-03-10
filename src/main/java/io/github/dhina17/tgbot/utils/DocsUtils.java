@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.File;
@@ -29,6 +31,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import io.github.dhina17.tgbot.configs.BotConfig;
 
 public class DocsUtils {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DocsUtils.class);
     
     public static final String getTextFromFile(AbilityBot bot, String fileId) {
 		StringBuilder fileContent = new StringBuilder();
@@ -40,7 +44,7 @@ public class DocsUtils {
 			File textFile = bot.execute(getFile);
 			fileUrl = textFile.getFileUrl(BotConfig.BOT_TOKEN);
 		} catch (TelegramApiException e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to execute the method",e);
 		}
 
 		if (fileUrl != null) {
@@ -54,13 +58,10 @@ public class DocsUtils {
 				}
 				reader.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				LOGGER.error("Failed to read the file",e1);
 			}
 		  }
-		
-		
-			return fileContent.toString();
-	
+		return fileContent.toString();
 	  }
 }
 
