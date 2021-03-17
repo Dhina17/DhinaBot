@@ -37,7 +37,7 @@ public class DhinaBot extends AbilityBot {
 	}
 
 	@Override
-  	public int creatorId() {
+  	public long creatorId() {
     	return BotConfig.CREATOR_ID;
   	}
 
