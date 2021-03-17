@@ -69,55 +69,49 @@ public class FileUtils {
             String fileName = getFileNameFromLink(link);
             File file = new File(fileName);
 
-            try(BufferedInputStream in = new BufferedInputStream(url.openStream())) {
-                FileOutputStream out = new FileOutputStream(file);
+            BufferedInputStream in = new BufferedInputStream(url.openStream());
+            FileOutputStream out = new FileOutputStream(file);
                 
-                byte[] dataBuffer = new byte[1024];
-                int bytesRead;
-                Integer downloaded = 0;
-                int downloadedPercent = 0;
+            byte[] dataBuffer = new byte[1024];
+            int bytesRead;
+            Integer downloaded = 0;
+            int downloadedPercent = 0;
 
-                Boolean isEdited = false;
+            Boolean isEdited = false;
 
-                while((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                    out.write(dataBuffer, 0, bytesRead);
-                    downloaded += bytesRead;
+            while((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                out.write(dataBuffer, 0, bytesRead);
+                downloaded += bytesRead;
 
-                    // Get the downloaded data in MB
-                    String downloadedSize = ProgressUtils.getSizeinMB(downloaded.longValue());
+                // Get the downloaded data in MB
+                String downloadedSize = ProgressUtils.getSizeinMB(downloaded.longValue());
 
-                    // Get the percent
-                    downloadedPercent = ProgressUtils.getPercent(downloaded.longValue(), fileSizeinBytes);
+                // Get the percent
+                downloadedPercent = ProgressUtils.getPercent(downloaded.longValue(), fileSizeinBytes);
                     
-                    // Just to avoid the delay of downloading the file.(Actually download completes faster but showing the progress will take time)
-                    // Will fix this in a better way later.
-                    if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
-                        String progress = "🔻 <b>Downloading :</b> <code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>" + downloadedSize + " / " + fileSize + " MB</code>";
-                        messageQueue.addEdit(progress);
-                        isEdited=true;
-                    }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){
-                        isEdited = false;
-                    }
+                // Just to avoid the delay of downloading the file.(Actually download completes faster but showing the progress will take time)
+                // Will fix this in a better way later.
+                if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
+                    String progress = "🔻 <b>Downloading :</b> <code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>" + downloadedSize + " / " + fileSize + " MB</code>";
+                    messageQueue.addEdit(progress);
+                    isEdited=true;
+                }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){
+                    isEdited = false;
                 }
-
-                //Closing output stream
-                out.close();
-
-                // final result
-                result[0] = "true";
-                result[1] = file.getPath();
-    
-                return result;
-
-            } catch(Exception e) {
-                LOGGER.error("Download failed",e);
-                return result;
             }
 
+            //Closing output stream
+            out.close();
+
+            // Closing input stream
+            in.close();
+
+            // final result
+            result[0] = "true";
+            result[1] = file.getPath();
         }catch(IOException e){
-            LOGGER.error("Download failed",e);
-            return result;
+            LOGGER.error("Download failed", e);
         }
-    } 
-    
+        return result;
+    }  
 }
