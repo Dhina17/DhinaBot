@@ -13,7 +13,7 @@ RUN mvn dependency:go-offline -B
 COPY . .
 
 # Build the jar
-RUN mvn clean package assembly:single -f "/tmp/bot/pom.xml" -B
+RUN mvn clean package assembly:single -f "/tmp/bot/pom.xml" -B -DskipTests
 
 # Stage - Execute the compiled jar
 FROM archlinux/archlinux:base as runstage
