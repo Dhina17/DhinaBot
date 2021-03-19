@@ -17,8 +17,6 @@
 
 package io.github.dhina17.tgbot.abilities;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.abilitybots.api.bot.AbilityBot;
@@ -40,10 +38,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
 import io.github.dhina17.tgbot.configs.GdriveConfig;
-import io.github.dhina17.tgbot.utils.FileUtils;
+import io.github.dhina17.tgbot.utils.ProcessUtils;
 import io.github.dhina17.tgbot.utils.botapi.BotExecutor;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
-import io.github.dhina17.tgbot.utils.gdrive.DriveUtils;
 import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
 
 public class DriveMirror implements AbilityExtension{
@@ -71,8 +68,18 @@ public class DriveMirror implements AbilityExtension{
                         String fileId = null;
                         String docFileName = null;
                         String downloadUrl = null;
-                        Boolean isGdriveLink = false;
+                        Boolean isGdriveLink = false; 
 
+                        /**
+                         * An array[5] which contains 
+                         *  [0] - isReply or not
+                         *  [1] - file Id in case of reply else null
+                         *  [2] - File name in case of reply else null
+                         *  [3] - download url in case not a reply else null
+                         *  [4] - isGdriveLink or not
+                         */
+                        String[] linkInfo = new String[5];
+ 
                         if(isReply){
                             if(replyToMessage.hasDocument()){
                                 Document doc = replyToMessage.getDocument();
@@ -103,6 +110,16 @@ public class DriveMirror implements AbilityExtension{
                             }
                         }
 
+                        /**
+                         * Add values for linkInfo[5]
+                         */
+                        linkInfo[0] = String.valueOf(isReply);
+                        linkInfo[1] = fileId;
+                        linkInfo[2] = docFileName;
+                        linkInfo[3] = downloadUrl;
+                        linkInfo[4] = String.valueOf(isGdriveLink);
+
+
                         SendMessage message = new SendMessage();
                         message.setChatId(String.valueOf(chatId));
                         message.setReplyToMessageId(commandMessage.getMessageId());
@@ -111,11 +128,6 @@ public class DriveMirror implements AbilityExtension{
                         // Check for the link
                         if(downloadUrl != null || fileId != null){
                             message.setText("<b>Getting info...</b>");
-                            final String remoteFileId = fileId;
-                            final String dUrl = downloadUrl;
-                            final Boolean isGdriveUrl = isGdriveLink;
-                            final String docName = docFileName;
-
                             try {
 								bot.executeAsync(message, new SentCallback<Message>(){
 
@@ -137,72 +149,41 @@ public class DriveMirror implements AbilityExtension{
 
                                         Boolean isFileUploaded = false;
 
-                                        // Dowloading the file in async way
-                                        CompletableFuture<String[]> downloadProcess = CompletableFuture.supplyAsync(() -> {
-                                            if(isReply){
-                                                return TgClientUtils.dowloadFile(remoteFileId, docName);
-                                            }else{
-                                                if(isGdriveUrl){
-                                                    return DriveUtils.downloadFromDrive(messageQueue, dUrl);
-                                                }else{
-                                                    return FileUtils.downloadFile(messageQueue, dUrl);
-                                                }
-                                            }
-                                            
-                                        });
+                                        // Download and Upload the file
+                                        String[] process = ProcessUtils.downloadAndUpload(linkInfo,
+                                                                        messageQueue);
 
+                                        isFileUploaded = Boolean.parseBoolean(process[0]);
+                                        
+                                        if(isFileUploaded){
+                                            // Get the file name and file size
+                                            String fileName = process[1];
+                                            String fileSize = process[2];
 
-                                        try{
-                                            // Upload the file after getting response from the download process
-                                            CompletableFuture<String[]> uploadProcess = downloadProcess.thenApply( downloadResult -> {
-                                            // Clear the queue as soon as the download process completed.
-                                            messageQueue.getQueue().clear();
-                                            Boolean isDownloaded = Boolean.parseBoolean(downloadResult[0]);
-                                            String downloadedFilePath = downloadResult[1];
-                                            if(!isDownloaded){
-                                                String[] result = {"false", ""};
-                                                messageQueue.addEdit("❗️<b>Download failed.</b>");
-                                                messageQueue.add("ENDS"); // To tell the excecutor this is the end(String object matters regardess of what text it is)
-                                                return result;
-                                            }else{
-                                                return DriveUtils.uploadToDrive(messageQueue, downloadedFilePath);
-                                            }});
+                                            // Delete the Progress Message from the bot
+                                            DeleteMessage dMsge = new DeleteMessage(String.valueOf(chatId), editMsgeId);
+                                            messageQueue.add(dMsge);
 
-                                            isFileUploaded = Boolean.parseBoolean(uploadProcess.get()[0]);
-                                            if(!isFileUploaded){
-                                                messageQueue.addEdit("❗️<b>Upload failed.</b>");
-                                                messageQueue.add("ENDS"); // To tell the executor this is end.
-                                            }else{
-                                                // Get the file name and file size
-                                                String fileName = uploadProcess.get()[1];
-                                                String fileSize = uploadProcess.get()[2];
+                                            // Sending the final sucess message with mirror link and link requested user
+                                            SendMessage successMessage = new SendMessage();
+                                            successMessage.setChatId(String.valueOf(chatId));
+                                            successMessage.setParseMode(ParseMode.HTML);
+                                            successMessage.setDisableWebPagePreview(true);
 
-                                                // Delete the Progress Message from the bot
-                                                DeleteMessage dMsge = new DeleteMessage(String.valueOf(chatId), editMsgeId);
-                                                messageQueue.add(dMsge);
+                                            // Finalize the mirror link
+                                            String mirrorLink = GdriveConfig.GDRIVE_INDEX_LINK + fileName;
+                                            String reqUserName = commandMessage.getFrom().getUserName(); // Get the mirror link requested user id
 
-                                                // Sending the final sucess message with mirror link and link requested user
-                                                SendMessage successMessage = new SendMessage();
-                                                successMessage.setChatId(String.valueOf(chatId));
-                                                successMessage.setParseMode(ParseMode.HTML);
-                                                successMessage.setDisableWebPagePreview(true);
+                                            // Finalize the message text
+                                            String successText = "🔰 <b>FileName :</b> <code>" + fileName + "</code>\n\n" +
+                                                                            "💾 <b>Size :</b> <code>" + fileSize + " MB</code>\n\n" +
+                                                                            "🔗 <b>Link :</b> <a href=\"" + mirrorLink + "\">Here</a>\n\n" +
+                                                                            "👤 <b>To :</b> @" + reqUserName; 
+                                            successMessage.setText(successText);
 
-                                                // Finalize the mirror link
-                                                String mirrorLink = GdriveConfig.GDRIVE_INDEX_LINK + uploadProcess.get()[1];
-                                                String reqUserName = commandMessage.getFrom().getUserName(); // Get the mirror link requested user id
-
-                                                // Finalize the message text
-                                                String successText = "🔰 <b>FileName :</b> <code>" + fileName + "</code>\n\n" +
-                                                                                "💾 <b>Size :</b> <code>" + fileSize + " MB</code>\n\n" +
-                                                                                "🔗 <b>Link :</b> <a href=\"" + mirrorLink + "\">Here</a>\n\n" +
-                                                                                "👤 <b>To :</b> @" + reqUserName; 
-                                                successMessage.setText(successText);
-                                                // send the final message
-                                                messageQueue.add(successMessage);
-                                                messageQueue.add("ENDS"); // To tell the executor this is end.
-                                            }
-                                        }catch(Exception e){
-                                            LOGGER.error("Unable to upload",e);
+                                            // send the final message
+                                            messageQueue.add(successMessage);
+                                            messageQueue.add("ENDS"); // To tell the executor this is end.
                                         }
 									}
 
