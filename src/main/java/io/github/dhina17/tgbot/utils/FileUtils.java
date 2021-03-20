@@ -28,6 +28,7 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.dhina17.tgbot.model.Result;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
 public class FileUtils {
@@ -51,11 +52,11 @@ public class FileUtils {
      * 
      * @param messageQueue Queue which contains all bot methods to be executed
      * @param link The link of the file to be downloaded
-     * @return A Boolean value implies Download success or not
+     * @return Result obj
      */
-    public static String[] downloadFile(MessageQueue messageQueue, String link){
+    public static Result downloadFile(MessageQueue messageQueue, String link){
         
-        String[] result = {"false", ""};
+        Result result = new Result();
         try{
 
             // Create URL
@@ -107,8 +108,9 @@ public class FileUtils {
             in.close();
 
             // final result
-            result[0] = "true";
-            result[1] = file.getPath();
+            result.setIsSuccess(true);
+            result.setFileName(fileName);
+            
         }catch(IOException e){
             LOGGER.error("Download failed", e);
         }

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.dhina17.tgbot.model.DownloadConfig;
+import io.github.dhina17.tgbot.model.Result;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 import io.github.dhina17.tgbot.utils.gdrive.DriveUtils;
 import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
@@ -32,7 +33,7 @@ public class ProcessUtils {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ProcessUtils.class);
 
-    public static CompletableFuture<String[]> download(final DownloadConfig downloadConfig, 
+    public static CompletableFuture<Result> download(final DownloadConfig downloadConfig, 
             MessageQueue messageQueue) {
                 return CompletableFuture.supplyAsync(() -> {
                     if(downloadConfig.getIsReply()){
@@ -49,27 +50,26 @@ public class ProcessUtils {
                 });
     }
 
-    public static CompletableFuture<String[]> upload(
-            CompletableFuture<String[]> downloadProcess, MessageQueue messageQueue) {
+    public static CompletableFuture<Result> upload(
+            CompletableFuture<Result> downloadProcess, MessageQueue messageQueue) {
                 return downloadProcess.thenApply( downloadResult -> {
                     // Clear the queue as soon as the download process completed.
                     messageQueue.getQueue().clear();
-                    Boolean isDownloaded = Boolean.parseBoolean(downloadResult[0]);
-                    String downloadedFilePath = downloadResult[1];
+                    Boolean isDownloaded = downloadResult.getIsSuccess();
+                    String downloadedFilePath = downloadResult.getFileName();
                     if(!isDownloaded){
-                        String[] result = {"false", ""};
                         messageQueue.addEdit("❗️<b>Download failed.</b>");
                         messageQueue.add("ENDS"); // To tell the excecutor this is the end(String object matters regardess of what text it is)
-                        return result;
+                        return new Result();
                     }else{
                         return DriveUtils.uploadToDrive(messageQueue, downloadedFilePath);
                     }
                 });
     }
 
-    public static String[] downloadAndUpload(final DownloadConfig downloadConfig, MessageQueue messageQueue) {
-        String[] result = {"false", "", ""};
-        CompletableFuture<String[]> process = upload(download(downloadConfig, messageQueue), 
+    public static Result downloadAndUpload(final DownloadConfig downloadConfig, MessageQueue messageQueue) {
+        Result result = new Result();
+        CompletableFuture<Result> process = upload(download(downloadConfig, messageQueue), 
                                                                         messageQueue);
         
         try {

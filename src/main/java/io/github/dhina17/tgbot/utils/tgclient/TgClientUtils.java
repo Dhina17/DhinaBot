@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.dhina17.tgbot.model.Result;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi.DownloadFile;
 import it.tdlight.jni.TdApi.File;
@@ -34,8 +35,8 @@ public class TgClientUtils {
     // Create update handler to get updates from Tdlib
     public static UpdateHandler updateHandler = new UpdateHandler();
 
-    public static String[] dowloadFile(String remoteFileId, String fileName) {
-        String[] result = {"false", ""};
+    public static Result dowloadFile(String remoteFileId, String fileName) {
+        Result result = new Result();
         GetRemoteFile getRemoteFile = new GetRemoteFile();
         getRemoteFile.remoteFileId = remoteFileId;
         Client.client.send(getRemoteFile, new ResultHandler() {
@@ -82,9 +83,9 @@ public class TgClientUtils {
             }
         }
 
-        result[0] = String.valueOf(isDownloadCompleted);
+        result.setIsSuccess(isDownloadCompleted);
         if(isDownloadCompleted){
-            result[1] = updateHandler.getFilePath();
+            result.setFileName(updateHandler.getFilePath());
         }
 
         return result;

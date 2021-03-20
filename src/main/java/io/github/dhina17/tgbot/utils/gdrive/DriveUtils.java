@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.dhina17.tgbot.configs.GdriveConfig;
+import io.github.dhina17.tgbot.model.Result;
 import io.github.dhina17.tgbot.utils.ProgressUtils;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
@@ -47,10 +48,10 @@ public class DriveUtils {
      * 
      * @param messageQueue Queue which contains all bot methods to be executed 
      * @param filePath  Path of the file which will be uploaded
-     * @return  An array of String with two elements {"file uploaded or not", "Name of the file after uploading", "Size of the uploaded file"}
+     * @return  Result obj
      */
-    public static String[] uploadToDrive(MessageQueue messageQueue, String filePath) {
-        String[] result = {"false", "", ""};
+    public static Result uploadToDrive(MessageQueue messageQueue, String filePath) {
+        Result result = new Result();
         java.io.File uploadFile = new java.io.File(filePath);
         
         /*
@@ -95,9 +96,9 @@ public class DriveUtils {
             File uploadedFile = create.execute();
 
             // For our result
-            result[0] = "true";
-            result[1] = uploadedFile.getName();
-            result[2] = ProgressUtils.getSizeinMB(uploadedFile.getSize());
+            result.setIsSuccess(true);
+            result.setFileName(uploadedFile.getName());;
+            result.setFileSize(ProgressUtils.getSizeinMB(uploadedFile.getSize()));;
 
             // Delete the local file. We don't need this anymore
             uploadFile.delete();
@@ -111,10 +112,10 @@ public class DriveUtils {
      * 
      * @param messageQueue Queue which contains all bot methods to be executed
      * @param fileId Fileid of the file to be downloaded
-     * @return An array of String with two elements {"file downloaded or not", "Name of the file"}
+     * @return Result
      */
-	public static String[] downloadFromDrive(MessageQueue messageQueue, String fileId) {
-        String[] result = {"false", ""};
+	public static Result downloadFromDrive(MessageQueue messageQueue, String fileId) {
+        Result result = new Result();
         try {
             // Create the request
             Drive.Files.Get request = driveService.files()
@@ -134,8 +135,8 @@ public class DriveUtils {
             request.executeMediaAndDownloadTo(out);
             
             // Finalize the result
-            result[0] = "true";
-            result[1] = fileName;
+            result.setIsSuccess(true);
+            result.setFileName(fileName);
 
 		} catch (IOException e) {
 			LOGGER.error("Download failed",e);

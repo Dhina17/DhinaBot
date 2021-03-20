@@ -39,6 +39,7 @@ import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
 import io.github.dhina17.tgbot.configs.GdriveConfig;
 import io.github.dhina17.tgbot.model.DownloadConfig;
+import io.github.dhina17.tgbot.model.Result;
 import io.github.dhina17.tgbot.utils.ProcessUtils;
 import io.github.dhina17.tgbot.utils.botapi.BotExecutor;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
@@ -140,15 +141,15 @@ public class DriveMirror implements AbilityExtension{
                                         Boolean isFileUploaded = false;
 
                                         // Download and Upload the file
-                                        String[] process = ProcessUtils.downloadAndUpload(downloadConfig,
+                                        Result processResult = ProcessUtils.downloadAndUpload(downloadConfig,
                                                                         messageQueue);
 
-                                        isFileUploaded = Boolean.parseBoolean(process[0]);
+                                        isFileUploaded = processResult.getIsSuccess();
                                         
                                         if(isFileUploaded){
                                             // Get the file name and file size
-                                            String fileName = process[1];
-                                            String fileSize = process[2];
+                                            String fileName = processResult.getFileName();
+                                            String fileSize = processResult.getFileSize();
 
                                             // Delete the Progress Message from the bot
                                             DeleteMessage dMsge = new DeleteMessage(String.valueOf(chatId), editMsgeId);
