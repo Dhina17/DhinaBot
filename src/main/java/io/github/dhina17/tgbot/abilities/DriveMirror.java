@@ -38,6 +38,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 
 import io.github.dhina17.tgbot.configs.GdriveConfig;
+import io.github.dhina17.tgbot.model.DownloadConfig;
 import io.github.dhina17.tgbot.utils.ProcessUtils;
 import io.github.dhina17.tgbot.utils.botapi.BotExecutor;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
@@ -66,33 +67,23 @@ public class DriveMirror implements AbilityExtension{
                         Boolean isReply = commandMessage.isReply();
                         Message replyToMessage = commandMessage.getReplyToMessage();
                         String fileId = null;
-                        String docFileName = null;
+                        String fileName = null;
                         String downloadUrl = null;
                         Boolean isGdriveLink = false; 
 
-                        /**
-                         * An array[5] which contains 
-                         *  [0] - isReply or not
-                         *  [1] - file Id in case of reply else null
-                         *  [2] - File name in case of reply else null
-                         *  [3] - download url in case not a reply else null
-                         *  [4] - isGdriveLink or not
-                         */
-                        String[] linkInfo = new String[5];
- 
                         if(isReply){
                             if(replyToMessage.hasDocument()){
                                 Document doc = replyToMessage.getDocument();
                                 fileId = doc.getFileId();
-                                docFileName = doc.getFileName();
+                                fileName = doc.getFileName();
                             }else if(replyToMessage.hasAudio()){
                                 Audio audio = replyToMessage.getAudio();
                                 fileId = audio.getFileId();
-                                docFileName = audio.getFileName();
+                                fileName = audio.getFileName();
                             }else if(replyToMessage.hasVideo()){
                                 Video video = replyToMessage.getVideo();
                                 fileId = video.getFileId();
-                                docFileName = video.getFileName();
+                                fileName = video.getFileName();
                             }
                         }else{
                             // Split the command to get the Download file link
@@ -110,14 +101,13 @@ public class DriveMirror implements AbilityExtension{
                             }
                         }
 
-                        /**
-                         * Add values for linkInfo[5]
-                         */
-                        linkInfo[0] = String.valueOf(isReply);
-                        linkInfo[1] = fileId;
-                        linkInfo[2] = docFileName;
-                        linkInfo[3] = downloadUrl;
-                        linkInfo[4] = String.valueOf(isGdriveLink);
+                        // // Create a download config object
+                        DownloadConfig downloadConfig = new DownloadConfig();
+                        downloadConfig.setIsReply(isReply);
+                        downloadConfig.setTgFileId(fileId);
+                        downloadConfig.setTgFileName(fileName);
+                        downloadConfig.setUrl(downloadUrl);
+                        downloadConfig.setIsGdriveLink(isGdriveLink);
 
 
                         SendMessage message = new SendMessage();
@@ -150,7 +140,7 @@ public class DriveMirror implements AbilityExtension{
                                         Boolean isFileUploaded = false;
 
                                         // Download and Upload the file
-                                        String[] process = ProcessUtils.downloadAndUpload(linkInfo,
+                                        String[] process = ProcessUtils.downloadAndUpload(downloadConfig,
                                                                         messageQueue);
 
                                         isFileUploaded = Boolean.parseBoolean(process[0]);

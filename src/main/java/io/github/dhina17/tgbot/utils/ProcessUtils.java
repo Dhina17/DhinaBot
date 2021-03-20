@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.dhina17.tgbot.model.DownloadConfig;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 import io.github.dhina17.tgbot.utils.gdrive.DriveUtils;
 import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
@@ -31,16 +32,17 @@ public class ProcessUtils {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ProcessUtils.class);
 
-    public static CompletableFuture<String[]> download(final String[] linkInfo, 
+    public static CompletableFuture<String[]> download(final DownloadConfig downloadConfig, 
             MessageQueue messageQueue) {
                 return CompletableFuture.supplyAsync(() -> {
-                    if(Boolean.parseBoolean(linkInfo[0])){
-                        return TgClientUtils.dowloadFile(linkInfo[1], linkInfo[2]);
+                    if(downloadConfig.getIsReply()){
+                        return TgClientUtils.dowloadFile(downloadConfig.getTgFileId(), 
+                                                                        downloadConfig.getTgFileName());
                     }else{
-                        if(Boolean.parseBoolean(linkInfo[4])){
-                            return DriveUtils.downloadFromDrive(messageQueue, linkInfo[3]);
+                        if(downloadConfig.getIsGdriveLink()){
+                            return DriveUtils.downloadFromDrive(messageQueue, downloadConfig.getUrl());
                         }else{
-                            return FileUtils.downloadFile(messageQueue, linkInfo[3]);
+                            return FileUtils.downloadFile(messageQueue, downloadConfig.getUrl());
                         }
                     }
                     
@@ -65,10 +67,10 @@ public class ProcessUtils {
                 });
     }
 
-    public static String[] downloadAndUpload(final String[] linkInfo, MessageQueue messageQueue) {
+    public static String[] downloadAndUpload(final DownloadConfig downloadConfig, MessageQueue messageQueue) {
         String[] result = {"false", "", ""};
-        CompletableFuture<String[]> process = upload(download(linkInfo, messageQueue), 
-                                                                messageQueue);
+        CompletableFuture<String[]> process = upload(download(downloadConfig, messageQueue), 
+                                                                        messageQueue);
         
         try {
             result = process.get();
