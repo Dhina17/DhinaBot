@@ -31,7 +31,7 @@ public class DriveDownloadProgressListener implements MediaHttpDownloaderProgres
     private MessageQueue messageQueue;
     private String fileName;
     private Long fileSizeInBytes;
-    private Boolean isEdited = false;
+    private long startTime;
 
     public DriveDownloadProgressListener(MessageQueue mQueue, String filename, Long filesize) {
         this.messageQueue = mQueue;
@@ -44,7 +44,7 @@ public class DriveDownloadProgressListener implements MediaHttpDownloaderProgres
         String fileSize = ProgressUtils.getSizeinMB(fileSizeInBytes);
         switch (downloader.getDownloadState()) {
             case NOT_STARTED:
-                // Do Nothing
+                startTime = System.currentTimeMillis();
                 break;
             case MEDIA_IN_PROGRESS: {
                 // Get the progress percent
@@ -54,16 +54,13 @@ public class DriveDownloadProgressListener implements MediaHttpDownloaderProgres
                 // Get the progress in data
                 String progressInData = ProgressUtils.getPercentValue(fileSizeInBytes, downloadedPercent);
 
-                // Just to avoid the delay of downloading the file.
-                // Actually download completes faster but showing the progress will take time.
-                // TO DO: Will fix this in a better way later.
-                if (!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0) {
+                /* Show updates once per 3.160 seconds | 60 / 19 = 3.16 (approx). Run 19 times/minute */
+                long currentTime = System.currentTimeMillis();
+                if(currentTime - startTime > 3160) {
                     String progress = "🔺 <b>Downloading : </b><code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>"
                             + progressInData + " / " + fileSize + " MB</code>";
                     messageQueue.addEdit(progress);
-                    isEdited = true;
-                } else if (downloadedPercent != 0 && downloadedPercent % 10 != 0) {
-                    isEdited = false;
+                    startTime = currentTime;
                 }
                 break;
             }

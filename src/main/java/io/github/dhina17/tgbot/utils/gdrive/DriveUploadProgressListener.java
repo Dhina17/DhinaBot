@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
 
     private MessageQueue messageQueue;
     private String fileName;
-    Boolean isEdited = false;
+    private long startTime;
 
     public DriveUploadProgressListener(MessageQueue mQueue, String fileName) {
         this.messageQueue = mQueue;
@@ -43,7 +43,7 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
         String fileSize = ProgressUtils.getSizeinMB(fileSizeInBytes);
         switch (uploader.getUploadState()) {
             case NOT_STARTED:
-                // Do Nothing
+                startTime = System.currentTimeMillis();
                 break;
 
             case INITIATION_STARTED:
@@ -62,18 +62,13 @@ public class DriveUploadProgressListener implements MediaHttpUploaderProgressLis
                 // Get the progress in data
                 String progressInData = ProgressUtils.getPercentValue(fileSizeInBytes, uploadedPercent);
 
-                // Just to avoid the delay of uploading the file.
-                // Actually upload completes faster but showing the progress will take time.
-                // TO DO: Will fix this in a better way later.
-                if(!isEdited && uploadedPercent != 0 && uploadedPercent % 10 == 0){
+                /* Show updates once per 3.160 seconds | 60 / 19 = 3.16 (approx). Run 19 times/minute */
+                long currentTime = System.currentTimeMillis();
+                if(currentTime - startTime > 3160) {
                     String progress = "🔺 <b>Uploading : </b><code>"+ fileName + "</code>\n<b>🕖 Progress :</b> <code>" + progressInData + " / " + fileSize + " MB</code>";
                     messageQueue.addEdit(progress);
-                    isEdited=true;
-                }else if(uploadedPercent != 0 && uploadedPercent % 10 != 0){
-                    isEdited = false;
+                    startTime = currentTime;
                 }
-
-                
                 break;
             }
 

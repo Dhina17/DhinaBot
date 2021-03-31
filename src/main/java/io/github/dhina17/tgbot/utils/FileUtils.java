@@ -76,9 +76,7 @@ public class FileUtils {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             Integer downloaded = 0;
-            int downloadedPercent = 0;
-
-            Boolean isEdited = false;
+            long startTime = System.currentTimeMillis();
 
             while((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                 out.write(dataBuffer, 0, bytesRead);
@@ -87,17 +85,12 @@ public class FileUtils {
                 // Get the downloaded data in MB
                 String downloadedSize = ProgressUtils.getSizeinMB(downloaded.longValue());
 
-                // Get the percent
-                downloadedPercent = ProgressUtils.getPercent(downloaded.longValue(), fileSizeinBytes);
-                    
-                // Just to avoid the delay of downloading the file.(Actually download completes faster but showing the progress will take time)
-                // Will fix this in a better way later.
-                if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
+                /* Show updates once per 3.160 seconds | 60 / 19 = 3.16 (approx). Run 19 times/minute */
+                long currentTime = System.currentTimeMillis();
+                if(currentTime - startTime > 3160) {
                     String progress = "🔻 <b>Downloading :</b> <code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>" + downloadedSize + " / " + fileSize + " MB</code>";
                     messageQueue.addEdit(progress);
-                    isEdited=true;
-                }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){
-                    isEdited = false;
+                    startTime = currentTime;
                 }
             }
 

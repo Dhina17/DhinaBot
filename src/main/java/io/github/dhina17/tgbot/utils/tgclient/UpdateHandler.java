@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ public class UpdateHandler implements UpdatesHandler {
     private Boolean isDownloadingActive = false;
     private String filePath = null;
     private String fileName = null;
-    private Boolean isEdited = false;
+    private long startTime = System.currentTimeMillis();
 
     @Override
     public void onUpdates(List<Object> object) {
@@ -58,18 +58,13 @@ public class UpdateHandler implements UpdatesHandler {
                     Integer dlFileSizeinBytes = updateFile.file.local.downloadedSize;
                     String dlFileSize = ProgressUtils.getSizeinMB(dlFileSizeinBytes.longValue());
 
-                    int downloadedPercent = ProgressUtils.getPercent(dlFileSizeinBytes.longValue(), fileSizeinBytes.longValue());
-
                     if(!isDownloadingCompleted){
-                        // Just to avoid the delay of downloading the file.
-                        // Actually download completes faster but showing the progress will take time.
-                        // Will fix this in a better way later.
-                        if(!isEdited && downloadedPercent != 0 && downloadedPercent % 10 == 0){
+                        /* Show updates once per 3.160 seconds | 60 / 19 = 3.16 (approx). Run 19 times/minute */
+                        long currentTime = System.currentTimeMillis();
+                        if(currentTime - startTime > 3160) {
                             String process = "🔻 <b>Downloading : </b><code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>" + dlFileSize + " / " + fileSize + " MB</code>";
                             messageQueue.addEdit(process);
-                            isEdited=true;
-                        }else if(downloadedPercent != 0 && downloadedPercent % 10 != 0){
-                            isEdited = false;
+                            startTime = currentTime;
                         }
                     }
 
