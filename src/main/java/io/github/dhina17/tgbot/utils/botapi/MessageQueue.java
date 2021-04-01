@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ public class MessageQueue {
 
     private String chatId;
     private int messageId;
+    private String prevText = "";
 
     private EditMessageText editMessage;
 
@@ -48,12 +49,16 @@ public class MessageQueue {
     }
 
     public void addEdit(final String text){
-        editMessage = new EditMessageText();
-        editMessage.setChatId(chatId);
-        editMessage.setMessageId(messageId);
-        editMessage.setParseMode(ParseMode.HTML);
-        editMessage.setText(text);
-        add(editMessage);
+        if(!prevText.equals(text)){
+            editMessage = new EditMessageText();
+            editMessage.setChatId(chatId);
+            editMessage.setMessageId(messageId);
+            editMessage.setParseMode(ParseMode.HTML);
+            editMessage.setText(text);
+            add(editMessage);
+            prevText = text;
+        }
+
     }
 
     public Queue<Object> getQueue(){
