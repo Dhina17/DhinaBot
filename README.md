@@ -120,7 +120,7 @@ A simple telegram bot written in java for my personal use. Feel free to use if y
 
 - Fork this repo.
 
-- Go to heroku.com and create an account (skip this if you have an account already)
+- Go to [heroku](https://heroku.com) and create an account (skip this if you have an account already)
 
 - Add values for [configs](#configs) as [Github Repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets)
 
