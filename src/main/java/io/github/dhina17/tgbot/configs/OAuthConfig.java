@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,5 +32,5 @@ public class OAuthConfig {
     /**
      * Path of your OAuth client credentials file
      */
-    public static final String CREDENTIALS_PATH = "/credentials.json";
+    public static final String CREDENTIALS_PATH = "credentials.json";
 }

@@ -17,6 +17,7 @@
 
 package io.github.dhina17.tgbot;
 
+import java.io.FileNotFoundException;
 import java.io.IOError;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -77,7 +78,11 @@ public final class Main {
 			DriveUtils.driveService = OAuth.getDriveService();
             LOGGER.info("OAuth authentication completed successfully");
 		} catch (IOException | GeneralSecurityException e1) {
-			LOGGER.error("OAuth failed", e1);
+            String error = "OAuth failed";
+            if(e1 instanceof FileNotFoundException){
+               error += " - credentials.json is not found in the current dir";
+            }
+			LOGGER.error(error, e1);
 		}
         
         try{

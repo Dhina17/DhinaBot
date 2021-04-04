@@ -31,7 +31,8 @@ RUN pacman -Syu --noconfirm; \
 
 WORKDIR /app
 
-# Copy the OAuth tokens and tdlib session file to work directory
+# Copy the OAuth credentials.json, tokens and tdlib session file to work directory
+COPY ./credentials.json /app/
 COPY ./tokens /app/tokens/
 COPY ./tdlib /app/tdlib/
 

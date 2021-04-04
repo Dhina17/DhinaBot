@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 package io.github.dhina17.tgbot.utils.gdrive;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,10 +48,7 @@ public class OAuth {
 
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        InputStream in = DriveUtils.class.getResourceAsStream(OAuthConfig.CREDENTIALS_PATH);
-        if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + OAuthConfig.CREDENTIALS_PATH);
-        }
+        InputStream in = new FileInputStream(OAuthConfig.CREDENTIALS_PATH);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(GSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
