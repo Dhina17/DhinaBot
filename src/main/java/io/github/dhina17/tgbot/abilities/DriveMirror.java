@@ -162,7 +162,7 @@ public class DriveMirror implements AbilityExtension{
                                             successMessage.setDisableWebPagePreview(true);
 
                                             // Finalize the mirror link
-                                            String mirrorLink = GdriveConfig.GDRIVE_INDEX_LINK + fileName;
+                                            String mirrorLink = GdriveConfig.GDRIVE_INDEX_LINK + "/" + fileName;
                                             String reqUserName = commandMessage.getFrom().getUserName(); // Get the mirror link requested user id
 
                                             // Finalize the message text
