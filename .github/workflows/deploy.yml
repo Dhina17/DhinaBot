@@ -39,6 +39,8 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           # The appname to use for deploying/updating
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          # Set the stack to container
+          stack: "container"
         env:
           HD_API_HASH: ${{secrets.API_HASH}}
           HD_API_ID: ${{secrets.API_ID}}
