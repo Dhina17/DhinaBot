@@ -77,7 +77,7 @@ public class DriveUtils {
             // Initialize the create 
             Create create = driveService.files().create(fileMetaData, fileContent);
             create.setSupportsTeamDrives(GdriveConfig.USE_TEAM_DRIVE); // Team drive
-            create.setFields("name,size"); // set required fields from the response
+            create.setFields("name,size,webViewLink"); // set required fields from the response
 
             /**
              * Uploader
@@ -99,6 +99,7 @@ public class DriveUtils {
             result.setIsSuccess(true);
             result.setFileName(uploadedFile.getName());;
             result.setFileSize(ProgressUtils.getSizeinMB(uploadedFile.getSize()));;
+            result.setFileLink(uploadedFile.getWebViewLink());
 
             // Delete the local file. We don't need this anymore
             uploadFile.delete();

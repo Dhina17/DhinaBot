@@ -147,9 +147,10 @@ public class DriveMirror implements AbilityExtension{
                                         isFileUploaded = processResult.getIsSuccess();
                                         
                                         if(isFileUploaded){
-                                            // Get the file name and file size
+                                            // Get the file name, size and gdrive link
                                             String fileName = processResult.getFileName();
                                             String fileSize = processResult.getFileSize();
+                                            String gdriveLink = processResult.getFileLink();
 
                                             // Delete the Progress Message from the bot
                                             DeleteMessage dMsge = new DeleteMessage(String.valueOf(chatId), editMsgeId);
@@ -168,7 +169,8 @@ public class DriveMirror implements AbilityExtension{
                                             // Finalize the message text
                                             String successText = "🔰 <b>FileName :</b> <code>" + fileName + "</code>\n\n" +
                                                                             "💾 <b>Size :</b> <code>" + fileSize + " MB</code>\n\n" +
-                                                                            "🔗 <b>Link :</b> <a href=\"" + mirrorLink + "\">Here</a>\n\n" +
+                                                                            "🔗 <b>Link :</b> <a href=\"" + mirrorLink + "\">Index</a>" + 
+                                                                                            "<b> | </b><a href=\"" + gdriveLink + "\">Gdrive</a>\n\n" +
                                                                             "👤 <b>To :</b> @" + reqUserName; 
                                             successMessage.setText(successText);
 

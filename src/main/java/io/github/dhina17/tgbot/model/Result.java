@@ -38,6 +38,11 @@ public class Result {
      */
     private String fileSize = null;
 
+    /**
+     * Gdrive WebViewLink of the file
+     */
+    private String fileLink = null;
+
     public Result(){
 
     }
@@ -47,10 +52,11 @@ public class Result {
         this.fileName = fileName;
     }
 
-    public Result(Boolean isSuccess, String fileName, String fileSize){
+    public Result(Boolean isSuccess, String fileName, String fileSize, String fileLink){
         this.isSuccess = isSuccess;
         this.fileName = fileName;
         this.fileSize = fileSize;
+        this.fileLink = fileLink;
     }
 
     public void setIsSuccess(Boolean isSuccess) {
@@ -65,6 +71,10 @@ public class Result {
         this.fileSize = fileSize;
     }
 
+    public void setFileLink(String link) {
+        this.fileLink = link;
+    }
+
     public Boolean getIsSuccess() {
         return isSuccess;
     }
@@ -75,6 +85,10 @@ public class Result {
 
     public String getFileSize() {
         return fileSize;
+    }
+
+    public String getFileLink() {
+        return fileLink;
     }
 
 }
