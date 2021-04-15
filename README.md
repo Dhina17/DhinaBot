@@ -131,10 +131,6 @@ A simple telegram bot written in java for my personal use. Feel free to use if y
 - Wait for 10 min, You will see a green tick. Finally, Bot deployed.
 (Make sure you have enabled the dyno in heroku for this app)
 
-## Why java?
-
-Why not. Bored of same thing with Python (no offence). Java lovers
-
 ## Contributions / Suggestions
 
 Feel free to open a [Pull Request](https://github.com/Dhina17/DhinaBot/pulls) if you want to fix/update anything.
