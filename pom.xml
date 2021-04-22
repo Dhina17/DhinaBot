@@ -13,7 +13,7 @@
         <repository>
             <id>mchv</id>
             <name>MCHV Release Apache Maven Packages</name>
-            <url>https://mvn.mchv.eu/repository/mchv</url>
+            <url>https://mvn.mchv.eu/repository/mchv/</url>
         </repository>
     </repositories>
     <dependencies>
@@ -51,12 +51,12 @@
         <dependency>
             <groupId>it.tdlight</groupId>
             <artifactId>tdlight-java</artifactId>
-            <version>4.171.62</version>
+            <version>4.171.100</version>
         </dependency>
         <dependency>
             <groupId>it.tdlight</groupId>
             <artifactId>tdlight-natives-linux-amd64</artifactId>
-            <version>3.2.52</version>
+            <version>3.3.28</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
