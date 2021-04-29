@@ -43,51 +43,51 @@ public class TgClientUtils {
 
             @Override
             public void onResult(Object object) {
-                File remoteFile = (File) object;
-                int remoteFileId = remoteFile.id;
+                // Only move further ifq uery results TdApi.File object.
+                if (object.getConstructor() == File.CONSTRUCTOR) {
+                    File remoteFile = (File) object;
+                    int remoteFileId = remoteFile.id;
 
-                // Set up the download file
-                DownloadFile downloadFile = new DownloadFile();
-                downloadFile.fileId = remoteFileId;
-                downloadFile.offset = 0;
-                downloadFile.limit = 0;
-                downloadFile.synchronous = false;
-                downloadFile.priority = 1;
+                    // Set up the download file
+                    DownloadFile downloadFile = new DownloadFile();
+                    downloadFile.fileId = remoteFileId;
+                    downloadFile.offset = 0;
+                    downloadFile.limit = 0;
+                    downloadFile.synchronous = false;
+                    downloadFile.priority = 1;
 
-                // Set the file name before start the download process
-                updateHandler.setFileName(fileName);
+                    // Set the file name before start the download process
+                    updateHandler.setFileName(fileName);
 
-                // Start the download
-                Client.client.send(downloadFile, new ResultHandler() {
+                    // Start the download
+                    Client.client.send(downloadFile, new ResultHandler() {
 
-                    @Override
-                    public void onResult(Object object) {
-                        // Do nothing
+                        @Override
+                        public void onResult(Object object) {
+                            // Do nothing
+                        }
+
+                    });
+
+                    Boolean isDownloading = true;
+                    Boolean isDownloadCompleted = false;
+                    while (!isDownloadCompleted && isDownloading) {
+                        try {
+                            TimeUnit.SECONDS.sleep(5);
+                            Boolean[] downloadStatus = updateHandler.getDownloadStatus();
+                            isDownloading = downloadStatus[0];
+                            isDownloadCompleted = downloadStatus[1];
+                        } catch (InterruptedException e) {
+                            LOGGER.error("Failed to wait",e);
+                        }
                     }
-
-                });
+                    result.setIsSuccess(isDownloadCompleted);
+                    if(isDownloadCompleted){
+                        result.setFileName(updateHandler.getFilePath());
+                    }
+                }
             }
-
         });
-
-        Boolean isDownloading = true;
-        Boolean isDownloadCompleted = false;
-        while (!isDownloadCompleted && isDownloading) {
-            try {
-                TimeUnit.SECONDS.sleep(5);
-                Boolean[] downloadStatus = updateHandler.getDownloadStatus();
-                isDownloading = downloadStatus[0];
-                isDownloadCompleted = downloadStatus[1];
-            } catch (InterruptedException e) {
-                LOGGER.error("Failed to wait",e);
-            }
-        }
-
-        result.setIsSuccess(isDownloadCompleted);
-        if(isDownloadCompleted){
-            result.setFileName(updateHandler.getFilePath());
-        }
-
         return result;
     }
 
