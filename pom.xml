@@ -51,12 +51,12 @@
         <dependency>
             <groupId>it.tdlight</groupId>
             <artifactId>tdlight-java</artifactId>
-            <version>4.171.101</version>
+            <version>4.171.110</version>
         </dependency>
         <dependency>
             <groupId>it.tdlight</groupId>
             <artifactId>tdlight-natives-linux-amd64</artifactId>
-            <version>3.3.28</version>
+            <version>3.3.37</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
