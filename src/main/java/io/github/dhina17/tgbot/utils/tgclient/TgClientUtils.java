@@ -43,7 +43,7 @@ public class TgClientUtils {
 
             @Override
             public void onResult(Object object) {
-                // Only move further ifq uery results TdApi.File object.
+                // Only move further if query results TdApi.File object.
                 if (object.getConstructor() == File.CONSTRUCTOR) {
                     File remoteFile = (File) object;
                     int remoteFileId = remoteFile.id;
@@ -68,26 +68,27 @@ public class TgClientUtils {
                         }
 
                     });
-
-                    Boolean isDownloading = true;
-                    Boolean isDownloadCompleted = false;
-                    while (!isDownloadCompleted && isDownloading) {
-                        try {
-                            TimeUnit.SECONDS.sleep(5);
-                            Boolean[] downloadStatus = updateHandler.getDownloadStatus();
-                            isDownloading = downloadStatus[0];
-                            isDownloadCompleted = downloadStatus[1];
-                        } catch (InterruptedException e) {
-                            LOGGER.error("Failed to wait",e);
-                        }
-                    }
-                    result.setIsSuccess(isDownloadCompleted);
-                    if(isDownloadCompleted){
-                        result.setFileName(updateHandler.getFilePath());
-                    }
                 }
             }
         });
+
+        Boolean isDownloading = true;
+        Boolean isDownloadCompleted = false;
+        while (!isDownloadCompleted && isDownloading) {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+                Boolean[] downloadStatus = updateHandler.getDownloadStatus();
+                isDownloading = downloadStatus[0];
+                isDownloadCompleted = downloadStatus[1];
+            } catch (InterruptedException e) {
+                LOGGER.error("Failed to wait",e);
+            }
+        }
+        result.setIsSuccess(isDownloadCompleted);
+        if(isDownloadCompleted){
+            result.setFileName(updateHandler.getFilePath());
+        }
+
         return result;
     }
 
