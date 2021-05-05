@@ -56,8 +56,9 @@ public class TgClientUtils {
                     downloadFile.synchronous = false;
                     downloadFile.priority = 1;
 
-                    // Set the file name before start the download process
+                    // Set the file name and file id before start the download process
                     updateHandler.setFileName(fileName);
+                    updateHandler.setFileId(remoteFileId);
 
                     // Start the download
                     Client.client.send(downloadFile, new ResultHandler() {

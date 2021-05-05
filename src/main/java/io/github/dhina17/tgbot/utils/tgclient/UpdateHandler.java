@@ -33,6 +33,7 @@ public class UpdateHandler implements UpdatesHandler {
     private Boolean isDownloadingActive = false;
     private String filePath = null;
     private String fileName = null;
+    private int fileId = 0;
     private long startTime = System.currentTimeMillis();
 
     @Override
@@ -47,29 +48,31 @@ public class UpdateHandler implements UpdatesHandler {
 
                 case TdApi.UpdateFile.CONSTRUCTOR: {
                     TdApi.UpdateFile updateFile = (TdApi.UpdateFile) object.get(i);
-                    isDownloadingCompleted = updateFile.file.local.isDownloadingCompleted;
-                    isDownloadingActive = updateFile.file.local.isDownloadingActive;
+                    if (updateFile.file.id == fileId) {
+                        isDownloadingCompleted = updateFile.file.local.isDownloadingCompleted;
+                        isDownloadingActive = updateFile.file.local.isDownloadingActive;
 
-                    // Get the expected file size
-                    Integer fileSizeinBytes = updateFile.file.expectedSize;
-                    String fileSize = ProgressUtils.getSizeinMB(fileSizeinBytes.longValue());
+                        // Get the expected file size
+                        Integer fileSizeinBytes = updateFile.file.expectedSize;
+                        String fileSize = ProgressUtils.getSizeinMB(fileSizeinBytes.longValue());
 
-                    // Get the downloaded file size
-                    Integer dlFileSizeinBytes = updateFile.file.local.downloadedSize;
-                    String dlFileSize = ProgressUtils.getSizeinMB(dlFileSizeinBytes.longValue());
+                        // Get the downloaded file size
+                        Integer dlFileSizeinBytes = updateFile.file.local.downloadedSize;
+                        String dlFileSize = ProgressUtils.getSizeinMB(dlFileSizeinBytes.longValue());
 
-                    if(!isDownloadingCompleted){
-                        /* Show updates once per 3.160 seconds | 60 / 19 = 3.16 (approx). Run 19 times/minute */
-                        long currentTime = System.currentTimeMillis();
-                        if(currentTime - startTime > 3160) {
-                            String process = "🔻 <b>Downloading : </b><code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>" + dlFileSize + " / " + fileSize + " MB</code>";
-                            messageQueue.addEdit(process);
-                            startTime = currentTime;
+                        if(!isDownloadingCompleted){
+                            /* Show updates once per 3.160 seconds | 60 / 19 = 3.16 (approx). Run 19 times/minute */
+                            long currentTime = System.currentTimeMillis();
+                            if(currentTime - startTime > 3160) {
+                                String process = "🔻 <b>Downloading : </b><code>" + fileName + "</code>\n<b>🕖 Progress :</b> <code>" + dlFileSize + " / " + fileSize + " MB</code>";
+                                messageQueue.addEdit(process);
+                                startTime = currentTime;
+                            }
                         }
-                    }
 
-                    if(isDownloadingCompleted){
-                        filePath = updateFile.file.local.path;
+                        if(isDownloadingCompleted){
+                            filePath = updateFile.file.local.path;
+                        }
                     }
                 }
             }
@@ -93,4 +96,7 @@ public class UpdateHandler implements UpdatesHandler {
         this.fileName = filename;
     }
     
+    public void setFileId(int id) {
+        this.fileId = id;
+    }
 }
