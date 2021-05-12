@@ -45,7 +45,7 @@ public class FileUtils {
         } catch (MalformedURLException e) {
             LOGGER.error("Error with link",e);
         }
-        return fileName;
+        return ProgressUtils.correctFileName(fileName);
     }
 
     /**
