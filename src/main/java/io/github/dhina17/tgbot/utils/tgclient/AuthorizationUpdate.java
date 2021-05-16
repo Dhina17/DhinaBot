@@ -84,6 +84,15 @@ public class AuthorizationUpdate {
                 Client.client.send(new TdApi.CheckAuthenticationCode(code), authorizationRequestHandler);
                 break;
             }
+
+            case TdApi.AuthorizationStateWaitPassword.CONSTRUCTOR: {
+                System.out.println("Enter your password:");
+                String password = getInput();
+                Client.client.send(new TdApi.CheckAuthenticationPassword(password),
+                        authorizationRequestHandler);
+                break;
+            }
+
             case TdApi.AuthorizationStateReady.CONSTRUCTOR:
                 haveAuthorization = true;
                 authorizationLock.lock();
