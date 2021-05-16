@@ -45,7 +45,6 @@ public final class Main {
     
     public static void main(String[] args) {
 
-        @SuppressWarnings("unused")
         CompletableFuture<Void> tdlib = CompletableFuture.runAsync(() -> {
             try {
                 // Initialize the TDlib
@@ -72,6 +71,7 @@ public final class Main {
             }
 
         });
+        tdlib.join();
 
         // Get drive service
         try {
