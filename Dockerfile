@@ -37,10 +37,10 @@ COPY ./tokens /app/tokens/
 COPY ./tdlib /app/tdlib/
 
 # Copy the compiled jar from the buildstage to work directory
-COPY --from=buildstage /tmp/bot/target/dhinabot-0.3-jar-with-dependencies.jar /app/
+COPY --from=buildstage /tmp/bot/target/dhinabot-1.0-jar-with-dependencies.jar /app/
 
 # Execute the jar
-CMD [ "java", "-jar", "dhinabot-0.3-jar-with-dependencies.jar" ]
+CMD [ "java", "-jar", "dhinabot-1.0-jar-with-dependencies.jar" ]
 
 
 
