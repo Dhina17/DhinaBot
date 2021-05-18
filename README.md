@@ -91,7 +91,7 @@ A simple telegram bot written in java for my personal use. Feel free to use if y
 
 ## How to generate OAuth token and Tdlib session
 
-- Download the jar from releases or [build](#how-to-build) yourself.
+- Download the jar from [releases](https://github.com/Dhina17/DhinaBot/releases) or [build](#how-to-build) yourself.
 
 - Place the [credentials.json](#how-to-get-credentials.json) and the fat jar in the same directory
 
