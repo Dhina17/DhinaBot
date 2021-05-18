@@ -97,7 +97,7 @@ A simple telegram bot written in java for my personal use. Feel free to use if y
 
 - Run the jar
 
-    `java -jar <name_of_the_jar>.jar`
+    `java -jar dhinabot-1.0-jar-with-dependencies.jar`
 
 - Follow the instructions present in your screen.
 
