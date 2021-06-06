@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.api.client.googleapis.media.MediaHttpUploader;
@@ -172,7 +173,8 @@ public class DriveUtils {
                     .execute();
                 
                 if (!fileList.isEmpty()) {
-                    name = ThreadLocalRandom.current().nextInt() + "-" + fileName;
+                    Random random = new Random();
+                    name =  random.nextInt(1000) + "-" + fileName;
                     break;
                 }
                 pageToken = fileList.getNextPageToken();
