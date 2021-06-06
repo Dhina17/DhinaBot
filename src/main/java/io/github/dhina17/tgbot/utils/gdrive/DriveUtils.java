@@ -23,12 +23,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files.Create;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +66,10 @@ public class DriveUtils {
             fileMetaData.setParents(Collections.singletonList(GdriveConfig.TEAM_DRIVE_ID));
         }
 
-        fileMetaData.setName(uploadFile.getName());
+        /**
+         * Set the file name by checking for duplicate names
+         */
+        fileMetaData.setName(setNameForFile(uploadFile.getName()));
 
         // Upload process
         try {
@@ -144,4 +149,38 @@ public class DriveUtils {
         }
         return result;
 	}
+
+    /**
+     * 
+     * Search for files with fileName in our drive.
+     * If file found, rename the file which will be uploaded.
+     * This way we can avoid the situation where many files have same file name.
+     * 
+     * @param fileName
+     * @return String name
+     */
+    private static String setNameForFile(String fileName) {
+        String name = fileName;
+        String pageToken = null;
+        do {
+            try {
+                FileList fileList = driveService.files().list()
+                    .setQ(String.format("name='%s'", fileName)) // Query for file with fileName
+                    .setSupportsAllDrives(true)
+                    .setFields("nextPageToken, files(id, name)")
+                    .setPageToken(pageToken)
+                    .execute();
+                
+                if (!fileList.isEmpty()) {
+                    name = ThreadLocalRandom.current().nextInt() + "-" + fileName;
+                    break;
+                }
+                pageToken = fileList.getNextPageToken();
+            } catch (IOException e) {
+                LOGGER.error("Failed to search files in drive", e);
+            }
+        } while (pageToken != null);
+        
+        return name;
+    }
 }
