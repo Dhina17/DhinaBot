@@ -82,7 +82,7 @@ public class DriveUtils {
 
             // Initialize the create 
             Create create = driveService.files().create(fileMetaData, fileContent);
-            create.setSupportsTeamDrives(GdriveConfig.USE_TEAM_DRIVE); // Team drive
+            create.setSupportsAllDrives(GdriveConfig.USE_TEAM_DRIVE); // Team drive
             create.setFields("name,size,webViewLink"); // set required fields from the response
 
             /**
