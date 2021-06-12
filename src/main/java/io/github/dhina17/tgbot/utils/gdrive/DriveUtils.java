@@ -29,6 +29,7 @@ import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files.Create;
+import com.google.api.services.drive.Drive.Files.List;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 
@@ -160,28 +161,62 @@ public class DriveUtils {
      * @return String name
      */
     private static String setNameForFile(String fileName) {
+
         String name = fileName;
         String pageToken = null;
-        do {
-            try {
-                FileList fileList = driveService.files().list()
-                    .setQ(String.format("name='%s'", fileName)) // Query for file with fileName
+
+        try {
+
+            /**
+             * Create List with required fields.
+             */
+            List fileList = driveService.files().list()
+                .setQ(String.format("name='%s'", fileName)) // Query for file with fileName
+                .setFields("nextPageToken, files(id, name)");
+
+            /**
+             * If we are using shared drive, then set
+             * - corpora = drive (searching files only in specified drive)
+             * - supportsAllDrives and IncludeItemsFromAllDrives must be set to true
+             *   when corpora == drive or allDrives
+             */
+            if (GdriveConfig.USE_TEAM_DRIVE) {
+                fileList.setCorpora("drive")
                     .setSupportsAllDrives(true)
-                    .setFields("nextPageToken, files(id, name)")
+                    .setIncludeItemsFromAllDrives(true)
+                    .setDriveId(GdriveConfig.TEAM_DRIVE_ID);
+            }
+
+            do {
+
+                /**
+                 * Execute the list with pagetoken.
+                 */
+                FileList searchResult = fileList
                     .setPageToken(pageToken)
                     .execute();
                 
-                if (!fileList.isEmpty()) {
+                /**
+                 * If the search list response doesn't have empty Files list,
+                 * Rename the current file with random 3 digit number prefix.
+                 */
+                if (!searchResult.getFiles().isEmpty()) {
                     Random random = new Random();
                     name =  random.nextInt(1000) + "-" + fileName;
                     break;
                 }
-                pageToken = fileList.getNextPageToken();
-            } catch (IOException e) {
-                LOGGER.error("Failed to search files in drive", e);
-            }
-        } while (pageToken != null);
-        
+
+                /**
+                 * Get the next page token
+                 */
+                pageToken = searchResult.getNextPageToken();
+
+            } while (pageToken != null);
+
+        } catch (IOException e) {
+            LOGGER.error("Failed to search files in drive", e);
+        }
+
         return name;
     }
 }
