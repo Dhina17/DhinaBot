@@ -156,6 +156,14 @@ public class DriveMirror implements AbilityExtension{
                                             DeleteMessage dMsge = new DeleteMessage(String.valueOf(chatId), editMsgeId);
                                             messageQueue.add(dMsge);
 
+                                            // Delete the command message from the user.
+                                            // Make sure bot has rights to delete messages(admin).
+                                            DeleteMessage deleteCommand = new DeleteMessage(
+                                                String.valueOf(chatId),
+                                                commandMessage.getMessageId()
+                                            );
+                                            messageQueue.add(deleteCommand);
+
                                             // Sending the final sucess message with mirror link and link requested user
                                             SendMessage successMessage = new SendMessage();
                                             successMessage.setChatId(String.valueOf(chatId));
