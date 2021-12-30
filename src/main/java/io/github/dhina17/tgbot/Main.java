@@ -18,10 +18,8 @@
 package io.github.dhina17.tgbot;
 
 import java.io.FileNotFoundException;
-import java.io.IOError;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +28,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import io.github.dhina17.tgbot.providers.Provider;
-import io.github.dhina17.tgbot.utils.tgclient.AuthorizationUpdate;
-import io.github.dhina17.tgbot.utils.tgclient.Client;
-import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
-import it.tdlight.common.Init;
-import it.tdlight.common.utils.CantLoadLibrary;
-import it.tdlight.jni.TdApi;
-import it.tdlight.tdlight.ClientManager;
 
 public final class Main {
 
@@ -44,33 +35,8 @@ public final class Main {
 
     public static void main(String[] args) {
 
-        CompletableFuture<Void> tdlib = CompletableFuture.runAsync(() -> {
-            try {
-                // Initialize the TDlib
-                Init.start();
-                Client.client = ClientManager.create();
-                Client.client.initialize(TgClientUtils.updateHandler, null, null);
-                Client.client.execute(new TdApi.SetLogVerbosityLevel(0));
-                if (Client.client.execute(new TdApi.SetLogStream(
-                        new TdApi.LogStreamFile("tdlib.log", 1 << 27, false))) instanceof TdApi.Error) {
-                    throw new IOError(new IOException("Write access to the current directory is required"));
-                }
-                AuthorizationUpdate.authorizationLock.lock();
-                try {
-                    while (!AuthorizationUpdate.haveAuthorization) {
-                        AuthorizationUpdate.gotAuthorization.await();
-                    }
-                } catch (InterruptedException e) {
-                    LOGGER.error("Authorization Interrupted", e);
-                } finally {
-                    AuthorizationUpdate.authorizationLock.unlock();
-                }
-            } catch (CantLoadLibrary e1) {
-                LOGGER.error("Failed to load library", e1);
-            }
-
-        });
-        tdlib.join();
+        // Initialize the Telegram client
+        Provider.initializeTgClient();
 
         // Initialize drive service
         try {

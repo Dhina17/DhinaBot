@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.dhina17.tgbot.model.Result;
+import io.github.dhina17.tgbot.providers.Provider;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi.DownloadFile;
 import it.tdlight.jni.TdApi.File;
@@ -39,7 +40,7 @@ public class TgClientUtils {
         Result result = new Result();
         GetRemoteFile getRemoteFile = new GetRemoteFile();
         getRemoteFile.remoteFileId = remoteFileId;
-        Client.client.send(getRemoteFile, new ResultHandler() {
+        Provider.getTgClient().send(getRemoteFile, new ResultHandler() {
 
             @Override
             public void onResult(Object object) {
@@ -61,7 +62,7 @@ public class TgClientUtils {
                     updateHandler.setFileId(remoteFileId);
 
                     // Start the download
-                    Client.client.send(downloadFile, new ResultHandler() {
+                    Provider.getTgClient().send(downloadFile, new ResultHandler() {
 
                         @Override
                         public void onResult(Object object) {

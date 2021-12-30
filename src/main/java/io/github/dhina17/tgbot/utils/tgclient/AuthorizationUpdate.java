@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.dhina17.tgbot.configs.TDLibConfig;
+import io.github.dhina17.tgbot.providers.Provider;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi;
 import it.tdlight.jni.TdApi.AuthorizationState;
@@ -63,17 +64,17 @@ public class AuthorizationUpdate {
                 parameters.applicationVersion = TDLibConfig.APP_VERSION;
                 parameters.enableStorageOptimizer = true;
 
-                Client.client.send(new TdApi.SetTdlibParameters(parameters), authorizationRequestHandler);
+                Provider.getTgClient().send(new TdApi.SetTdlibParameters(parameters), authorizationRequestHandler);
                 break;
 
             case TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR:
-                Client.client.send(new TdApi.CheckDatabaseEncryptionKey(), authorizationRequestHandler);
+                Provider.getTgClient().send(new TdApi.CheckDatabaseEncryptionKey(), authorizationRequestHandler);
                 break;
 
             case AuthorizationStateWaitPhoneNumber.CONSTRUCTOR: {
                 System.out.println("Enter your phone number:");
                 String phoneNumber = getInput();
-                Client.client.send(new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null),
+                Provider.getTgClient().send(new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null),
                         authorizationRequestHandler);
                 break;
             }
@@ -81,14 +82,14 @@ public class AuthorizationUpdate {
             case AuthorizationStateWaitCode.CONSTRUCTOR: {
                 System.out.println("Enter Authencation code:");
                 String code = getInput();
-                Client.client.send(new TdApi.CheckAuthenticationCode(code), authorizationRequestHandler);
+                Provider.getTgClient().send(new TdApi.CheckAuthenticationCode(code), authorizationRequestHandler);
                 break;
             }
 
             case TdApi.AuthorizationStateWaitPassword.CONSTRUCTOR: {
                 System.out.println("Enter your password:");
                 String password = getInput();
-                Client.client.send(new TdApi.CheckAuthenticationPassword(password),
+                Provider.getTgClient().send(new TdApi.CheckAuthenticationPassword(password),
                         authorizationRequestHandler);
                 break;
             }
