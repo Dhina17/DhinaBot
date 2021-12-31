@@ -17,6 +17,7 @@
 
 package io.github.dhina17.tgbot.providers;
 
+import java.io.FileNotFoundException;
 import java.io.IOError;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -37,7 +38,7 @@ import it.tdlight.jni.TdApi;
 import it.tdlight.tdlight.ClientManager;
 
 public class Provider {
-    
+
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(Provider.class);
 
@@ -46,10 +47,19 @@ public class Provider {
 
     // Singleton Telegram Client
     private static TelegramClient client;
-    
-    public static synchronized void initializeDriveService() throws IOException, GeneralSecurityException {
+
+    public static synchronized void initializeDriveService() {
         if (driveService == null) {
-            driveService = OAuth.getDriveService();
+            try {
+                driveService = OAuth.getDriveService();
+                LOGGER.info("OAuth authentication completed successfully");
+            } catch (IOException | GeneralSecurityException e) {
+                String error = "OAuth failed";
+                if (e instanceof FileNotFoundException) {
+                    error += " - credentials.json is not found in the current dir";
+                }
+                LOGGER.error(error, e);
+            }
         }
     }
 

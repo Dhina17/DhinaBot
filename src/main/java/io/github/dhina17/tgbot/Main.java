@@ -17,10 +17,6 @@
 
 package io.github.dhina17.tgbot;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -39,16 +35,7 @@ public final class Main {
         Provider.initializeTgClient();
 
         // Initialize drive service
-        try {
-            Provider.initializeDriveService();
-            LOGGER.info("OAuth authentication completed successfully");
-        } catch (IOException | GeneralSecurityException e1) {
-            String error = "OAuth failed";
-            if (e1 instanceof FileNotFoundException) {
-                error += " - credentials.json is not found in the current dir";
-            }
-            LOGGER.error(error, e1);
-        }
+        Provider.initializeDriveService();
 
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
