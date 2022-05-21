@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2022  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package io.github.dhina17.tgbot;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 
 import io.github.dhina17.tgbot.abilities.Alive;
-import io.github.dhina17.tgbot.abilities.Dogbin;
 import io.github.dhina17.tgbot.abilities.DriveMirror;
 import io.github.dhina17.tgbot.abilities.Help;
 import io.github.dhina17.tgbot.abilities.Source;
@@ -30,7 +29,6 @@ public class DhinaBot extends AbilityBot {
 	protected DhinaBot() {
 		super(BotConfig.BOT_TOKEN, BotConfig.BOT_USERNAME);
         addExtensions(new Alive(this),
-                            new Dogbin(this),
                             new DriveMirror(this),
                             new Help(this),
                             new Source(this));

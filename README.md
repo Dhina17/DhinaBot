@@ -12,8 +12,6 @@ A simple telegram bot written in java for my personal use. Feel free to use if y
 
 - Mirror bot (direct link, telegram files)
 
-- Dogbin - paste and get content.
-
 ## To Do List
 
 - [ ] Add torrent download support

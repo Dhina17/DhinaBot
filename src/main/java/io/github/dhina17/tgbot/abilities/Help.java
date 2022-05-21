@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2022  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,11 +57,9 @@ public class Help implements AbilityExtension {
 
                     final String helpMessage = "Available commands:\n\n"
                             + "1) /alive - Just to check whether I m alive or not.\n\n"
-                            + "2) /paste - Reply to a text or document(text mime) to get dogbin link.\n\n"
-                            + "3) /getpaste  - Reply to a dogbin link to get its content.\n\n"
-                            + "4) /mirror - Usage : /mirror <link>  or Reply to a file to mirror.\n\n"
-                            + "5) /source - To get the source of this bot.\n\n"
-                            + "6) /help - To get a help(this message).";
+                            + "2) /mirror - Usage : /mirror <link>  or Reply to a file to mirror.\n\n"
+                            + "3) /source - To get the source of this bot.\n\n"
+                            + "4) /help - To get a help(this message).";
 
                     SendMessage message = new SendMessage();
                     message.setChatId(String.valueOf(chatId));
