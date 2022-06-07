@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2022  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ public class DriveUtils {
 
             // For Resumable Upload.
             uploader.setDirectUploadEnabled(false); // DirectUpload is disabled
-            uploader.setChunkSize(MediaHttpUploader.MINIMUM_CHUNK_SIZE);
+            uploader.setChunkSize(MediaHttpUploader.DEFAULT_CHUNK_SIZE);
 
             // Add our Progress Listerner
             uploader.setProgressListener(new DriveUploadProgressListener(messageQueue, uploadFile.getName()));
