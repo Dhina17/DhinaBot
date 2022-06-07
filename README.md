@@ -148,7 +148,7 @@ Feel free to create an [issue](https://github.com/Dhina17/DhinaBot/issues) if yo
 ```
 
     DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2022  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
