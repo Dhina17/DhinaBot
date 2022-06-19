@@ -1,5 +1,5 @@
 # Stage - Build the maven project
-FROM maven:3.6.3-jdk-11-slim as buildstage
+FROM maven:3.8.6-openjdk-18-slim as buildstage
 
 WORKDIR /tmp/bot
 
