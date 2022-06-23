@@ -53,12 +53,12 @@ public class UpdateHandler implements UpdatesHandler {
                         isDownloadingActive = updateFile.file.local.isDownloadingActive;
 
                         // Get the expected file size
-                        Integer fileSizeinBytes = updateFile.file.expectedSize;
-                        String fileSize = ProgressUtils.getSizeinMB(fileSizeinBytes.longValue());
+                        Long fileSizeinBytes = updateFile.file.expectedSize;
+                        String fileSize = ProgressUtils.getSizeinMB(fileSizeinBytes);
 
                         // Get the downloaded file size
-                        Integer dlFileSizeinBytes = updateFile.file.local.downloadedSize;
-                        String dlFileSize = ProgressUtils.getSizeinMB(dlFileSizeinBytes.longValue());
+                        Long dlFileSizeinBytes = updateFile.file.local.downloadedSize;
+                        String dlFileSize = ProgressUtils.getSizeinMB(dlFileSizeinBytes);
 
                         if(!isDownloadingCompleted){
                             /* Show updates once per 3.160 seconds | 60 / 19 = 3.16 (approx). Run 19 times/minute */
