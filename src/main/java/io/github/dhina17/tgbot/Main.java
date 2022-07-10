@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2022  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import io.github.dhina17.tgbot.providers.Provider;
+import io.github.dhina17.tgbot.utils.gdrive.DriveService;
+import io.github.dhina17.tgbot.utils.tgclient.TgClient;
 
 public final class Main {
 
@@ -31,11 +32,11 @@ public final class Main {
 
     public static void main(String[] args) {
 
-        // Initialize the Telegram client
-        Provider.initializeTgClient();
+        // start the Telegram client
+        TgClient.startClient();
 
         // Initialize drive service
-        Provider.initializeDriveService();
+        DriveService.initializeDriveService();
 
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);

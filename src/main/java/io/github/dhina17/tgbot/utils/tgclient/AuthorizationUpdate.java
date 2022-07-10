@@ -1,6 +1,6 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
-    
+    Copyright (C) 2020-2022  Dhina17 <dhinalogu@gmail.com>
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.dhina17.tgbot.configs.TDLibConfig;
-import io.github.dhina17.tgbot.providers.Provider;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi;
 import it.tdlight.jni.TdApi.AuthorizationState;
@@ -64,17 +63,17 @@ public class AuthorizationUpdate {
                 parameters.applicationVersion = TDLibConfig.APP_VERSION;
                 parameters.enableStorageOptimizer = true;
 
-                Provider.getTgClient().send(new TdApi.SetTdlibParameters(parameters), authorizationRequestHandler);
+                TgClient.getClient().send(new TdApi.SetTdlibParameters(parameters), authorizationRequestHandler);
                 break;
 
             case TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR:
-                Provider.getTgClient().send(new TdApi.CheckDatabaseEncryptionKey(), authorizationRequestHandler);
+                TgClient.getClient().send(new TdApi.CheckDatabaseEncryptionKey(), authorizationRequestHandler);
                 break;
 
             case AuthorizationStateWaitPhoneNumber.CONSTRUCTOR: {
                 System.out.println("Enter your phone number:");
                 String phoneNumber = getInput();
-                Provider.getTgClient().send(new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null),
+                TgClient.getClient().send(new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null),
                         authorizationRequestHandler);
                 break;
             }
@@ -82,14 +81,14 @@ public class AuthorizationUpdate {
             case AuthorizationStateWaitCode.CONSTRUCTOR: {
                 System.out.println("Enter Authencation code:");
                 String code = getInput();
-                Provider.getTgClient().send(new TdApi.CheckAuthenticationCode(code), authorizationRequestHandler);
+                TgClient.getClient().send(new TdApi.CheckAuthenticationCode(code), authorizationRequestHandler);
                 break;
             }
 
             case TdApi.AuthorizationStateWaitPassword.CONSTRUCTOR: {
                 System.out.println("Enter your password:");
                 String password = getInput();
-                Provider.getTgClient().send(new TdApi.CheckAuthenticationPassword(password),
+                TgClient.getClient().send(new TdApi.CheckAuthenticationPassword(password),
                         authorizationRequestHandler);
                 break;
             }
@@ -112,7 +111,7 @@ public class AuthorizationUpdate {
         public void onResult(it.tdlight.jni.TdApi.Object object) {
             switch (object.getConstructor()) {
                 case TdApi.Error.CONSTRUCTOR:
-                    LOGGER.error("Receive an error",object);
+                    LOGGER.error("Receive an error", object);
                     onAuthorizationStateUpdated(null); // repeat last action
                     break;
                 case TdApi.Ok.CONSTRUCTOR:
@@ -130,7 +129,7 @@ public class AuthorizationUpdate {
         try {
             str = read.readLine();
         } catch (IOException e) {
-            LOGGER.error("Failed to read",e);
+            LOGGER.error("Failed to read", e);
         }
         return str;
     }

@@ -1,5 +1,5 @@
 /* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2020-2021  Dhina17 <dhinalogu@gmail.com>
+    Copyright (C) 2020-2022  Dhina17 <dhinalogu@gmail.com>
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.dhina17.tgbot.model.Result;
-import io.github.dhina17.tgbot.providers.Provider;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi.DownloadFile;
 import it.tdlight.jni.TdApi.File;
@@ -33,6 +32,7 @@ import it.tdlight.jni.TdApi.Object;
 public class TgClientUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TgClientUtils.class);
+
     // Create update handler to get updates from Tdlib
     public static UpdateHandler updateHandler = new UpdateHandler();
 
@@ -40,7 +40,7 @@ public class TgClientUtils {
         Result result = new Result();
         GetRemoteFile getRemoteFile = new GetRemoteFile();
         getRemoteFile.remoteFileId = remoteFileId;
-        Provider.getTgClient().send(getRemoteFile, new ResultHandler() {
+        TgClient.getClient().send(getRemoteFile, new ResultHandler() {
 
             @Override
             public void onResult(Object object) {
@@ -62,7 +62,7 @@ public class TgClientUtils {
                     updateHandler.setFileId(remoteFileId);
 
                     // Start the download
-                    Provider.getTgClient().send(downloadFile, new ResultHandler() {
+                    TgClient.getClient().send(downloadFile, new ResultHandler() {
 
                         @Override
                         public void onResult(Object object) {
@@ -83,11 +83,11 @@ public class TgClientUtils {
                 isDownloading = downloadStatus[0];
                 isDownloadCompleted = downloadStatus[1];
             } catch (InterruptedException e) {
-                LOGGER.error("Failed to wait",e);
+                LOGGER.error("Failed to wait", e);
             }
         }
         result.setIsSuccess(isDownloadCompleted);
-        if(isDownloadCompleted){
+        if (isDownloadCompleted) {
             result.setFileName(updateHandler.getFilePath());
         }
 

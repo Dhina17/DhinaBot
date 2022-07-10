@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import io.github.dhina17.tgbot.configs.GdriveConfig;
 import io.github.dhina17.tgbot.model.Result;
-import io.github.dhina17.tgbot.providers.Provider;
 import io.github.dhina17.tgbot.utils.ProgressUtils;
 import io.github.dhina17.tgbot.utils.botapi.MessageQueue;
 
@@ -80,7 +79,7 @@ public class DriveUtils {
             fileContent.setLength(uploadFile.length());
 
             // Initialize the create
-            Create create = Provider.getDriverService().files().create(fileMetaData, fileContent);
+            Create create = DriveService.getService().files().create(fileMetaData, fileContent);
             create.setSupportsAllDrives(GdriveConfig.USE_TEAM_DRIVE); // Team drive
             create.setFields("name,size,webViewLink"); // set required fields from the response
 
@@ -126,7 +125,7 @@ public class DriveUtils {
         Result result = new Result();
         try {
             // Create the request
-            Drive.Files.Get request = Provider.getDriverService().files()
+            Drive.Files.Get request = DriveService.getService().files()
                     .get(fileId)
                     .setSupportsAllDrives(true)
                     .setFields("name,size"); // Name and size are enough
@@ -171,7 +170,7 @@ public class DriveUtils {
             /**
              * Create List with required fields.
              */
-            List fileList = Provider.getDriverService().files().list()
+            List fileList = DriveService.getService().files().list()
                     .setQ(String.format("name='%s'", fileName)) // Query for file with fileName
                     .setFields("nextPageToken, files(id, name)");
 

@@ -1,6 +1,6 @@
-/* DhinaBot - A simple telegram bot for my personal use
-    Copyright (C) 2021  Dhina17 <dhinalogu@gmail.com>
-    
+/*  DhinaBot - A simple telegram bot for my personal use
+    Copyright (C) 2022  Dhina17 <dhinalogu@gmail.com>
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -15,66 +15,37 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package io.github.dhina17.tgbot.providers;
+package io.github.dhina17.tgbot.utils.tgclient;
 
-import java.io.FileNotFoundException;
 import java.io.IOError;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.concurrent.CompletableFuture;
-
-import com.google.api.services.drive.Drive;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.dhina17.tgbot.utils.gdrive.OAuth;
-import io.github.dhina17.tgbot.utils.tgclient.AuthorizationUpdate;
-import io.github.dhina17.tgbot.utils.tgclient.TgClientUtils;
 import it.tdlight.common.Init;
 import it.tdlight.common.TelegramClient;
 import it.tdlight.common.utils.CantLoadLibrary;
 import it.tdlight.jni.TdApi;
 import it.tdlight.tdlight.ClientManager;
 
-public class Provider {
+public class TgClient {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(Provider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TgClient.class);
 
-    // Singleton Drive Service
-    private static Drive driveService;
-
-    // Singleton Telegram Client
+    // Telegram client
     private static TelegramClient client;
 
-    public static synchronized void initializeDriveService() {
-        if (driveService == null) {
-            try {
-                driveService = OAuth.getDriveService();
-                LOGGER.info("OAuth authentication completed successfully");
-            } catch (IOException | GeneralSecurityException e) {
-                String error = "OAuth failed";
-                if (e instanceof FileNotFoundException) {
-                    error += " - credentials.json is not found in the current dir";
-                }
-                LOGGER.error(error, e);
-            }
-        }
+    protected static TelegramClient getClient() {
+        return client;
     }
 
-    public static synchronized void initializeTgClient() {
+    public static synchronized void startClient() {
         if (client == null) {
             initializeClient();
         }
-    }
-
-    public static Drive getDriverService() {
-        return driveService;
-    }
-
-    public static TelegramClient getTgClient() {
-        return client;
     }
 
     private static void initializeClient() {
