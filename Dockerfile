@@ -1,3 +1,10 @@
+#
+# DhinaBot - A simple telegram bot
+# Copyright (C) 2020-2022  Dhina17 <dhinalogu@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
 # Stage - Build the maven project
 FROM maven:3.8.6-openjdk-18-slim as buildstage
 

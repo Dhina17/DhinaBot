@@ -1,3 +1,10 @@
+#
+# DhinaBot - A simple telegram bot
+# Copyright (C) 2021 Dhina17 <dhinalogu@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
 build:
   docker:
     worker: Dockerfile
